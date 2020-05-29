@@ -1,0 +1,32 @@
+event:
+  connected: "information"
+  disconnected: "information"
+  established: "information"
+  assetStatusError: "error"
+  firmwareUpdated: "information"
+task:
+  downloadPackage:
+    create: "information"
+    execute: "information"
+    success: "information"
+    fail: "error"
+  install:
+    create: "information"
+    execute: "information"
+    success: "information"
+    fail: "error"
+  logs:
+    create: "information"
+    execute: "information"
+    success: "information"
+    fail: "error"
+  reboots:
+    create: "information"
+    execute: "information"
+    success: "information"
+    fail: "error"
+  selftests:
+    create: "information"
+    execute: "information"
+    success: "information"
+    fail: "error"

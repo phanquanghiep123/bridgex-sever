@@ -1,0 +1,8 @@
+POST http://localhost:3000/bulk/assets/GetMany
+Content-Type: application/json
+
+[
+  {"typeId": "CI10", "assetId": "100001"},
+  {"typeId": "CI10", "assetId": "test100"},
+  {"typeId": "CI10", "assetId": "100002"}
+]

@@ -1,0 +1,717 @@
+asyncapi: 2.0.0
+info:
+  title: Agent - Brigde-X -- MQTT Interface Specification
+  version: 1.0.0
+  description: |
+    This document describes the MQTT interface specification between Bridge-X and Agent on assets
+servers:
+  default:
+    url: "messaging.glory-cloud.dev:{port}"
+    description: Allows you to connect using the MQTT protocol.
+    variables:
+      port:
+        default: "8883"
+        description: |
+          The ports of the broker.
+          1883: plain MQTT, need authN credentials
+          8883: secure MQTT, need authN credentials
+          1882: plain MQTT, no need authN (for development usage)
+          8882: secure MQTT, no need authN (for development usage)
+        enum:
+          - "1882"
+          - "1883"
+          - "8882"
+          - "8883"
+    protocol: mqtt
+components:
+  messages:
+    Connection:
+      deprecated: false
+      summary: Asset is connected or disconnected
+      description: |
+        This event is sent when asset connected to mqtt broker or disconnected.
+        Case of disconnected, this event should be Last Will.
+        And if the asset is machine module (such as RCW, RBW), this message doesn't contain IP Address info.
+        Only software (ISPK05) should contains IP Address info.
+        * Disctonnected Event is Last Will
+      tags:
+        - name: event
+        - name: general
+        - name: will
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/EventMetaData"
+          - $ref: "#/components/schemas/IPAddress"
+          - $ref: "#/components/schemas/Connection"
+          - type: object
+            description: for event example
+            properties:
+              type:
+                default: Event
+                example: Event
+              name:
+                default: Connection
+                example: Connection
+    Established:
+      deprecated: false
+      summary: Connection to sub-asset is established
+      description: |
+        This event is sent when an asset is established and able to send its version.
+      tags:
+        - name: event
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/EventMetaData"
+          - $ref: "#/components/schemas/Versions"
+          - type: object
+            description: for event example
+            properties:
+              type:
+                default: Event
+                example: Event
+              name:
+                default: Established
+                example: Established
+    AssetStatusUpdated:
+      deprecated: false
+      summary: Asset status changed
+      description: |
+        This event is sent when an asset changes its status.
+      tags:
+        - name: event
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/EventMetaData"
+          - $ref: "#/components/schemas/AssetStatus"
+          - type: object
+            properties:
+              type:
+                default: Event
+                example: Event
+              name:
+                default: AssetStatusUpdated
+                example: AssetStatusUpdated
+    InventoryChanged:
+      deprecated: false
+      summary: Inventory changed
+      description: |
+        This event is sent when inventory is changed.
+      tags:
+        - name: event
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/EventMetaData"
+          - $ref: "#/components/schemas/Inventory"
+          - type: object
+            properties:
+              type:
+                default: Event
+                example: Event
+              name:
+                default: InventoryChanged
+                example: InventoryChanged
+    CreateSession:
+      deprecated: false
+      summary: Create Sesson
+      description: |
+        This event is sent when session between application and an asset is created by g-connect.
+        This message contains topic information for specific session, and application can command to asset using this session topic.
+      tags:
+        - name: event
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/EventMetaData"
+          - $ref: "#/components/schemas/SessionTopic"
+          - type: object
+            properties:
+              type:
+                default: Event
+                example: Event
+              name:
+                default: CreateSession
+                example: CreateSession
+              sender:
+                example: "g-connect"
+    CloseSession:
+      deprecated: false
+      summary: To Close Sesson
+      description: |
+        This command is to close session between bridge-x and an asset.
+      tags:
+        - name: command
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/SessionMetaData"
+          - type: object
+            properties:
+              type:
+                default: Command
+                example: Command
+              name:
+                default: CloseSession
+                example: CloseSession
+              sender:
+                example: "bridge-x"
+    CloseSessionRes:
+      deprecated: false
+      summary: About closing Session
+      description: |
+        This response should be published when session is closed.
+      tags:
+        - name: response
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/SessionMetaData"
+          - $ref: "#/components/schemas/CommandResult"
+          - type: object
+            properties:
+              type:
+                default: Response
+                example: Response
+              name:
+                default: CloseSession
+                example: CloseSession
+              result:
+                default: Succeed
+                example: Succeed
+              errorCode:
+                default: ""
+                example: ""
+              errorMsg:
+                default: ""
+                example: ""
+    DownloadPackage:
+      deprecated: false
+      summary: To download firmware/software, (configuration) package
+      description: |
+        This command is to download firmware /software, (configuration) package file.
+      tags:
+        - name: command
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/SessionMetaData"
+          - $ref: "#/components/schemas/DownloadPackage"
+          - type: object
+            properties:
+              type:
+                default: Command
+                example: Command
+              name:
+                default: DownloadPackage
+                example: DownloadPackage
+              sender:
+                example: "bridge-x"
+    DownloadPackageRes:
+      deprecated: false
+      summary: result of downloading firmware/software (or configuration) file.
+      description: |
+        This response is result of downloading firmware/software (or configuration) file.
+      tags:
+        - name: response
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/SessionMetaData"
+          - $ref: "#/components/schemas/CommandResult"
+          - type: object
+            properties:
+              type:
+                default: Command
+                example: Command
+              name:
+                default: DownloadPackage
+                example: DownloadPackage
+  schemas:
+    MQTTQoSHeader:
+      title: qos
+      description: Quality of Service
+      type: integer
+      default: 0
+      enum:
+        - 0
+    MQTTRetainHeader:
+      title: retainFlag
+      description: |
+        This flag determines if the message will be saved by the broker for the
+        specified
+
+        topic as last known good value. New clients that subscribe to that topic
+        will receive
+
+        the last retained message on that topic instantly after subscribing.
+        More on retained messages
+
+        and best practices in one of the next posts.
+      type: boolean
+      default: false
+    MessageBase:
+      title: messageBase
+      description: This is Basic Information of MQTT Message
+      type: object
+      required:
+        - type
+        - name
+        - version
+        - application
+      properties:
+        type:
+          $ref: "#/components/schemas/MessageType"
+        name:
+          $ref: "#/components/schemas/MessageName"
+        version:
+          $ref: "#/components/schemas/MessageVersion"
+        sender:
+          $ref: "#/components/schemas/Sender"
+    MessageType:
+      description: Types of messages for interacting with IoT systems
+      type: string
+      enum:
+        - Event
+        - Command
+        - Response
+      example: Event
+    MessageName:
+      description: A specific message name within the type specified MessageType
+      type: string
+      example: Connected
+    MessageVersion:
+      description: A version of this message
+      type: integer
+      default: 1
+    Sender:
+      description: Application which pub/sub this message
+      type: string
+      example: "asset"
+    AssetMetaData:
+      description: This is metadata of an asset. Assets are not only device such as CI-100, RBG-100, but internal module such as RBW-100,RCW-100,SDRC, and so on, are also able to be an asset.
+      type: object
+      required:
+        - assetMetaData
+      properties:
+        assetMetaData:
+          type: object
+          required:
+            - typeId
+            - assetId
+            - messageId
+          properties:
+            typeId:
+              description: The asset type
+              type: string
+              example: RBG-100
+            assetId:
+              description: The asset ID. This ID is unique within each asset type.
+              type: string
+              example: "010001"
+            messageId:
+              description: message id
+              type: string
+              example: "10101"
+    EventMetaData:
+      description: This is metadata of an asset. Assets are not only device such as CI-100, RBG-100, but internal module such as RBW-100,RCW-100,SDRC, and so on, are also able to be an asset.
+      type: object
+      required:
+        - assetMetaData
+      properties:
+        assetMetaData:
+          type: object
+          required:
+            - typeId
+            - assetId
+          properties:
+            typeId:
+              description: The asset type
+              type: string
+              example: RBG-100
+            assetId:
+              description: The asset ID. This ID is unique within each asset type.
+              type: string
+              example: "010001"
+    SessionMetaData:
+      description: The detailed information of this message
+      type: object
+      required:
+        - assetMetaData
+      properties:
+        assetMetaData:
+          type: object
+          required:
+            - typeId
+            - assetId
+            - sessionId
+            - messageId
+          properties:
+            typeId:
+              description: The asset type
+              type: string
+              example: RBG-100
+            assetId:
+              description: The asset ID. This ID is unique within each asset type.
+              type: string
+              example: "010001"
+            sessionId:
+              description: session id
+              type: string
+              example: 3F2504E0-4F89-11D3-9A0C-0305E82C3301
+            messageId:
+              description: message id
+              type: string
+              example: "10101"
+    SessionTopic:
+      description: The specific topic for the session
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          description: The detailed information of this message
+          type: object
+          required:
+            - sessionId
+            - topicPrefix
+          properties:
+            sessionId:
+              description: session Id
+              type: string
+              example: 3F2504E0-4F89-11D3-9A0C-0305E82C3301
+            topicPrefix:
+              description: topic prefix
+              type: string
+              example: /glory/session/3F2504E0-4F89-11D3-9A0C-0305E82C3301
+    AssetStatus:
+      description: The Status of an Asset
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          description: The detailed information of this message
+          type: object
+          required:
+            - status
+          properties:
+            status:
+              description: status
+              type: string
+              format: ^(Good)|(Error)$
+              enum:
+                - Good
+                - Error
+              example: Error
+            errorCode:
+              description: error code (when status is Error, errorCode is required)
+              type: string
+              example: E0001
+            errorMsg:
+              description: error message (when status is Error, errorMsg is required)
+              type: string
+              example: Something happens in this Asset
+    Inventory:
+      description: The Inventory information
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          type: object
+          required:
+            - cashUnits
+          properties:
+            cashUnits:
+              description: The detailed information of this message
+              type: array
+              items:
+                type: object
+                required:
+                  - unit
+                  - status
+                  - capacity
+                  - denominations
+                properties:
+                  unit:
+                    description: casset name
+                    type: string
+                    example: "casset 1"
+                  status:
+                    description: casset status
+                    type: string
+                    example: Full
+                    required:
+                      - Full
+                      - NearFull
+                      - HasCash
+                      - NearEmpty
+                      - Empty
+                      - Missing
+                      - Fallback
+                  nearFull:
+                    description: border line of near full satatus for this casset
+                    type: number
+                    example: 550
+                  nearEmpty:
+                    description: border line of near empty satatus for this casset
+                    type: number
+                    example: 10
+                  capacity:
+                    description: capacity of this casset
+                    type: number
+                    example: 600
+                  denominations:
+                    description: each inventory by denomination
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - currencyCode
+                        - faceValue
+                        - count
+                      properties:
+                        currencyCode:
+                          description: currency code, ISO 4217 format
+                          type: string
+                          example: "EUR"
+                        faceValue:
+                          description: type of denomination
+                          type: string
+                          example: "20"
+                        count:
+                          description: count number
+                          type: number
+                          example: 0
+                        revision:
+                          description: revision
+                          type: number
+                          example: 0
+    IPAddress:
+      description: The IP Address information
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          description: The detailed information of this message
+          type: object
+          required:
+            - ipAddress
+          properties:
+            ipAddress:
+              description: IP Address
+              type: string
+              example: "127.0.0.1"
+    Connection:
+      description: The Connection information
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          description: The detailed information of this message
+          type: object
+          required:
+            - connection
+          properties:
+            connection:
+              description: connection status
+              type: string
+              enum:
+                - Connected
+                - Disconnected
+              example: "Connected"
+    Versions:
+      description: The Version information
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          description: The detailed information of this message
+          type: object
+          properites:
+            versions:
+              description: version Information
+              type: array
+              items:
+                type: object
+                required:
+                  - name
+                  - value
+                properties:
+                  name:
+                    description: name
+                    type: string
+                  value:
+                    description: version
+                    type: string
+          example:
+            versions:
+              - name: UpperAP
+                value: C034B
+              - name: RUGeneralization1
+                value: 020C
+              - name: RUParameter2
+                value: "0500"
+    DownloadPackage:
+      description: The Downloading Package information
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          description: The detailed information of this message
+          type: object
+          properties:
+            protocol:
+              description: protocol which is to use downloading firmware/software package
+              type: string
+              example: "https"
+            url:
+              description: url which is to use downloading firmware/software package
+              type: string
+              example: "https://glory.ch/rbg100/001030/frimware.zip"
+            username:
+              description: username which is to use downloading firmware/software package
+              type: string
+              example: "asdfas4233523523"
+            password:
+              description: password which is to use downloading firmware/software package
+              type: string
+              example: "23565rffgvyxvr5434"
+    CommandResult:
+      description: The Result of Command
+      type: object
+      required:
+        - result
+      properties:
+        result:
+          description: result
+          type: string
+          format: ^(Succeed)|(Accepted)|(Error)$
+          enum:
+            - Succeed
+            - Accepted
+            - Error
+          example: Error
+        errorCode:
+          description: error code (when status is Error, errorCode is required)
+          type: string
+          example: E0001
+        errorMsg:
+          description: error message (when status is Error, errorMsg is required)
+          type: string
+          example: Something happens in this Asset
+channels:
+  /glory/g-connect/event/Connection:
+    subscribe:
+      message:
+        $ref: "#/components/messages/Connection"
+  /glory/g-connect/event/Established:
+    subscribe:
+      message:
+        $ref: "#/components/messages/Established"
+  /glory/g-connect/event/AssetStatusUpdated:
+    subscribe:
+      message:
+        $ref: "#/components/messages/AssetStatusUpdated"
+  /glory/g-connect/event/InventoryChanged:
+    subscribe:
+      message:
+        $ref: "#/components/messages/InventoryChanged"
+  /:session-topic/command/CreateSession:
+    publish:
+      message:
+        $ref: "#/components/messages/CreateSession"
+  /:session-topic/command/CloseSession:
+    publish:
+      message:
+        $ref: "#/components/messages/CloseSession"
+  /:session-topic/response/CloseSession:
+    subscribe:
+      message:
+        $ref: "#/components/messages/CloseSessionRes"
+  /:session-topic/command/DownloadPackage:
+    publish:
+      message:
+        $ref: "#/components/messages/DownloadPackage"
+  /:session-topic/response/DownloadPackage:
+    subscribe:
+      message:
+        $ref: "#/components/messages/DownloadPackageRes"

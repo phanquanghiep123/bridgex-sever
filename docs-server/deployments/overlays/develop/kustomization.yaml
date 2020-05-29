@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+nameSuffix: -develop
+
+commonLabels:
+  tag: develop
+
+bases:
+  - ../../base
+
+images:
+  - name: de.icr.io/bridge-x/bridge-x-server-docs
+    newTag: latest-dev
+
+configMapGenerator:
+  - name: bridge-x-server-docs
+    literals:
+      - BASE_URL=https://docs.glory-cloud.dev/bridge-x-server/develop
+      - BASE_PATH=/bridge-x-server/develop

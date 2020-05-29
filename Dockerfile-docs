@@ -1,0 +1,36 @@
+# --------------------------
+# Build stage
+# --------------------------
+FROM node:12 as builder
+
+USER node
+
+ADD --chown=node ./docs-server/package.json /build/app/
+WORKDIR /build/app
+
+RUN npm i
+
+COPY --chown=node ./docs /build/docs
+RUN npm run build
+RUN npm prune --production
+
+# --------------------------
+# Copy to target image
+# --------------------------
+FROM node:12-alpine
+
+USER node
+
+ENV SERVER_PORT "3000"
+ENV BASE_URL ""
+ENV BASE_PATH ""
+ENV DOCS_OPENAPI_JSON "/app/docs/bridge-x-server.openapi.json"
+ENV DOCS_ASYNCAPI_PATH "/app/docs/mqtt"
+
+COPY --from=builder --chown=node /build/app/node_modules /app/node_modules
+COPY --from=builder --chown=node /build/docs /app/docs
+COPY --chown=node ./docs-server/index.js /app/index.js
+
+WORKDIR /app
+
+CMD ["node", "/app/index.js"]

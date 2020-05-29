@@ -1,0 +1,86 @@
+@startuml save-events.sequence.plantuml
+
+title: save events sequence
+
+participant "Bridge-X BFF" as bff
+participant "Bridge-X server" as bxs
+database Postgres as pg #123456
+participant "Task scheduler" as sch
+collections Asset as asset
+
+note over pg
+  Events are saved as event of parent asset in DB
+end note
+
+group Events From Asset via MQTT Broker
+  group Event: Connection
+    bxs <- asset : PUB /glory/g-connect/event/Connection
+    bxs -> pg    : event: Connection
+  end
+
+  group Event: AssetStatusUpdated
+    bxs <- asset : PUB /glory/g-connect/event/AssetStatusUpdated
+
+    alt status == Good
+      bxs -> bxs   : do nothing
+    else status == Error
+      bxs -> pg    : event: AssetStatusUpdated
+    end
+  end
+
+  group Event: FirmwareUpdated
+    bxs <- asset : PUB /glory/g-connect/event/FirmwareUpdated
+    bxs -> pg    : event: FirmwareUpdated
+  end
+
+  group Event: Established
+    bxs <- asset : PUB /glory/g-connect/event/Established
+    bxs -> pg    : event: Established
+  end
+end
+
+group Events From Bridge
+
+  group Command/Response: DownloadPackage
+    bff -> bxs   : POST /tasks/deployments
+    bxs -> pg    : event: scheduled DownloadPackage Command
+    bxs <- sch   : start DownloadPackage Command
+
+    loop assets specified in task
+      bxs -> asset : PUB /:session-topic/command/DownloadPackage to a sub asset associated with package
+
+      alt communicaiton success
+        bxs -> pg    : event: executed DownloadPackage Command
+      else communicaiton error
+        bxs -> pg    : event: Failure DownloadPackage
+      end
+
+      bxs <- asset : PUB /:session-topic/response/DownloadPackage from sub asset(Succeded or Error)
+      bxs -> pg    : event: Success DownloadPackage or Failure DownloadPackage
+    end
+  end
+
+  group Command/Response: RetrieveLog
+    bff -> bxs   : POST /tasks/logs
+    bxs -> pg    : event: scheduled RetrieveLog Command
+    bxs <- sch   : start RetrieveLog Command
+
+
+    loop assets specified in task
+      bxs -> asset : PUB /:session-topic/command/RetrieveLog
+
+      alt communicaiton success
+        bxs -> pg    : event: executed RetrieveLog Command
+      else communicaiton error
+        bxs -> pg    : event: Failure RetrieveLog
+      end
+
+      bxs <- asset : PUB /:session-topic/response/RetrieveLog (Succeded or Error)
+      bxs -> pg    : event: Success RetrieveLog or Failure RetrieveLog
+    end
+
+  end
+
+end
+
+@enduml

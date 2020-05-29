@@ -1,0 +1,1541 @@
+asyncapi: 2.0.0
+info:
+  title: Agent - Brigde-X -- MQTT Interface Specification
+  version: 1.0.3
+  description: |
+    This document describes the MQTT interface specification between Bridge-X and Agent on assets
+servers:
+  default:
+    url: "messaging.glory-cloud.dev:{port}"
+    description: Allows you to connect using the MQTT protocol.
+    variables:
+      port:
+        default: "8883"
+        description: |
+          The ports of the broker.
+          1883: plain MQTT, need authN credentials
+          8883: secure MQTT, need authN credentials
+          1882: plain MQTT, no need authN (for development usage)
+          8882: secure MQTT, no need authN (for development usage)
+        enum:
+          - "1882"
+          - "1883"
+          - "8882"
+          - "8883"
+    protocol: mqtt
+components:
+  messages:
+    Connection:
+      deprecated: false
+      summary: Asset is connected or disconnected
+      description: |
+        This event is sent when asset connected to mqtt broker or disconnected.
+        Case of disconnected, this event should be Last Will.
+        ##### Notice
+        * Protocol should be set that an asset want to use to File Transfer to cloud storage.
+        * Disconnected Event is Last Will.
+        ##### Case of Composite Asset
+        * This event is sent by each sub-asset.
+        * If the asset is machine module (such as RCW, RBW), this message contains same IP Address and protocol info as software (such as ISP-K05).
+      tags:
+        - name: event
+        - name: general
+        - name: will
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/EventMetaData"
+          - $ref: "#/components/schemas/IPAddress"
+          - $ref: "#/components/schemas/Protocol"
+          - $ref: "#/components/schemas/Connection"
+          - type: object
+            description: for event example
+            properties:
+              type:
+                default: Event
+                example: Event
+              name:
+                default: Connection
+                example: Connection
+    Established:
+      deprecated: false
+      summary: Connection to sub-asset is established
+      description: |
+        This event is sent when an asset is established and able to send its version.
+        ##### Notice
+        * This message is supposed to be sent once at least after Connection Event.
+        ##### Case of Composite Asset
+        * This event is sent by each sub-asset.
+        * Including each firmware/software versions by sub-asset into detail of payload.
+      tags:
+        - name: event
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/EventMetaData"
+          - $ref: "#/components/schemas/Versions"
+          - type: object
+            description: for event example
+            properties:
+              type:
+                default: Event
+                example: Event
+              name:
+                default: Established
+                example: Established
+    AssetStatusUpdated:
+      deprecated: false
+      summary: Asset status changed
+      description: |
+        This event is sent when an asset changes its status.
+        ##### Notice
+        * This message is supposed to be sent once at least (even if manually) after Established Event.
+        ##### Case of Composite Asset
+        * This event is sent by each sub-asset.
+        * Sending message when each sub-asset's status changed.
+      tags:
+        - name: event
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/EventMetaData"
+          - $ref: "#/components/schemas/AssetStatus"
+          - type: object
+            properties:
+              type:
+                default: Event
+                example: Event
+              name:
+                default: AssetStatusUpdated
+                example: AssetStatusUpdated
+    InventoryChanged:
+      deprecated: false
+      summary: Inventory changed
+      description: |
+        This event is sent when inventory is changed.
+        ##### Notice
+        * This message is supposed to be sent once at least (even if manually) after Established Event.
+        ##### Case of Composite Asset
+        * This event is sent by each sub-asset.  
+        * Sending message when each sub-asset's inventory changed.
+        * Including each inventory by sub-asset into detail of payload.
+      tags:
+        - name: event
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/EventMetaData"
+          - $ref: "#/components/schemas/Inventory"
+          - type: object
+            properties:
+              type:
+                default: Event
+                example: Event
+              name:
+                default: InventoryChanged
+                example: InventoryChanged
+    ConfigurationChanged:
+      deprecated: false
+      summary: Configuration changed
+      description: |
+        This event is sent when configuration is changed.
+        ##### Notice
+        * CI-10 does not support this event.
+      tags:
+        - name: event
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/EventMetaData"
+          - type: object
+            properties:
+              type:
+                default: Event
+                example: Event
+              name:
+                default: ConfigurationChanged
+                example: ConfigurationChanged
+    FirmwareUpdated:
+      deprecated: false
+      summary: Firmware updated
+      description: |
+        This event is sent when firmware is updated.
+        ##### Notice
+        * This message is supposed to be sent (even if manually) after Established Event, if firmware is updated from last time.
+        ##### Case of Composite Asset
+        * This event is sent by each sub-asset.  
+        * This message is sent by each sub-asset when its firmware is updated.
+      tags:
+        - name: event
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/EventMetaData"
+          - $ref: "#/components/schemas/PackageInfo"
+          - type: object
+            properties:
+              type:
+                default: Event
+                example: Event
+              name:
+                default: FirmwareUpdated
+                example: FirmwareUpdated
+    CreateSession:
+      deprecated: false
+      summary: Create Session
+      description: |
+        This action is sent when session topic between application and an asset is created by g-connect.  
+        This message contains topic information for specific session, 
+        and application can command to asset using this session topic.
+        ##### Notice
+        * The session topic is supposed to have been subscribing until receiving CloseSession Action.
+        ##### Case of Composite Asset
+        * This message is sent to each sub-asset (such as ISP-K05, RBW-100, RCW-100 and so on).
+        * In terms of some commands which specifies sub-asset (such as DownloadPackage) ,  
+          this action is sent to the specified sub-asset only.
+      tags:
+        - name: action
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/EventMetaData"
+          - $ref: "#/components/schemas/SessionTopic"
+          - type: object
+            properties:
+              type:
+                default: Action
+                example: Action
+              name:
+                default: CreateSession
+                example: CreateSession
+              sender:
+                example: "g-connect"
+    CloseSession:
+      deprecated: false
+      summary: To Close Session
+      description: |
+        This action is sent to close session topic between bridge-x and an asset.
+        ##### Case of Composite Asset
+        * This message is sent to each sub-asset (such as ISP-K05, RBW-100, RCW-100 and so on).
+      tags:
+        - name: action
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/EventMetaData"
+          - $ref: "#/components/schemas/SessionTopic"
+          - type: object
+            properties:
+              type:
+                default: Action
+                example: Action
+              name:
+                default: CloseSession
+                example: CloseSession
+              sender:
+                example: "g-connect"
+    RetrieveIpAddress:
+      deprecated: false
+      summary: To Retrieve IP Address
+      description: |
+        This command is to retrieve IP Address.
+        ##### Notice
+        * This message is retained, so should be cleared after receiving. (to clear, send message with zero length payload to this topic)
+        ##### Case of Composite Asset
+        * This message is sent to each sub-asset.
+        * Each sub-asset sets same IP address (software's IP address , such as ISP-K05's ip address)
+      tags:
+        - name: command
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+            example: true
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/AssetMetaData"
+          - type: object
+            properties:
+              type:
+                default: Command
+                example: Command
+              name:
+                default: RetrieveIpAddress
+                example: RetrieveIpAddress
+              sender:
+                example: "g-connect"
+    RetrieveIpAddressRes:
+      deprecated: false
+      summary: IP Address Information
+      description: |
+        This response is about IP Address.
+        ##### Notice
+        * Asset is supposed to publish this message after receiving RetrieveIpAddress Command.
+      tags:
+        - name: response
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+            example: true
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/AssetMetaData"
+          - $ref: "#/components/schemas/IPAddress"
+          - $ref: "#/components/schemas/CommandResult"
+          - type: object
+            properties:
+              type:
+                default: Response
+                example: Response
+              name:
+                default: RetrieveIpAddress
+                example: RetrieveIpAddress
+              result:
+                default: Succeed
+                example: Succeed
+              errorCode:
+                default: ""
+                example: ""
+              errorMsg:
+                default: ""
+                example: ""
+    RetrieveLog:
+      deprecated: false
+      summary: To Retriece Log
+      description: |
+        This command is to retrieve application log or trace log.
+        ##### Notice
+        * Protocol will be set same as which asset sent with Connection Message.
+        * If asset needed credentials to access Cloud Storage, username and password would be set.
+        * type : if asset can accept what type of log would be retreived, this properties would be set.  
+          if asset can't accept to specify what log asset retrieves, asset can ignore `log type`, and retrieve all logs asset is able to. 
+        * from, to : if asset can accept to be specified the term of log, this properties would be set.　　
+          if asset can't accept to specify the term of log, asset can ignore `from` `to`, and retrieve all logs asset is able to.
+        * This message is retained, so should be cleared after receiving. (to clear, send message with zero length payload to this topic)
+        ##### Case of Composite Asset
+        * This message is sent to each sub-asset.
+        * Each MQTT client (such as ISP-K05's, RBW-100's, RCW-100's clients) should handle this command.  
+          They retrieve each logs such as device log and application log, and archive with the name which is specified in this Command message.
+          Then upoading the archived file to Cloud storage where is specified in command message.
+      tags:
+        - name: command
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+            example: true
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/SessionMetaData"
+          - $ref: "#/components/schemas/LogType"
+          - $ref: "#/components/schemas/RetrieveLog"
+          - type: object
+            properties:
+              type:
+                default: Command
+                example: Command
+              name:
+                default: RetrieveLog
+                example: RetrieveLog
+              sender:
+                example: "bridge-x"
+    RetrieveLogRes:
+      deprecated: false
+      summary: Retrieving Log Result
+      description: |
+        This response is result of retrieving application log or trace log.
+        ##### Notice
+        * Asset is supposed to publish this message after receiving RetrieveLog Command and uploading retrieved log.
+      tags:
+        - name: response
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+            example: true
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/SessionMetaData"
+          - $ref: "#/components/schemas/CommandResult"
+          - type: object
+            properties:
+              type:
+                default: Response
+                example: Response
+              name:
+                default: RetrieveLog
+                example: RetrieveLog
+              result:
+                default: Succeed
+                example: Succeed
+              errorCode:
+                default: ""
+                example: ""
+              errorMsg:
+                default: ""
+                example: ""
+    RetrieveConfiguration:
+      deprecated: true
+      summary: To retreive configuration
+      description: |
+        This command is to retrieve configuration.
+        ##### Notice
+        * Should be considered
+        * CI-10 does not support this event.
+        * This message is retained, so should be cleared after receiving. (to clear, send message with zero length payload to this topic)
+      tags:
+        - name: command
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+            example: true
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/SessionMetaData"
+          - type: object
+            properties:
+              type:
+                default: Command
+                example: Command
+              name:
+                default: RetrieveConfiguration
+                example: RetrieveConfiguration
+              sender:
+                example: "bridge-x"
+    RetrieveConfigurationRes:
+      deprecated: true
+      summary: configuration
+      description: |
+        This response is about configuration.
+        ##### Notice
+        * Asset is supposed to publish this message after receiving RetrieveConfiguration Command.
+        * Should be considered
+        * CI-10 does not support this event.
+      tags:
+        - name: response
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+            example: true
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/SessionMetaData"
+          - $ref: "#/components/schemas/Configuration"
+          - $ref: "#/components/schemas/CommandResult"
+          - type: object
+            properties:
+              type:
+                default: Response
+                example: Response
+              name:
+                default: RetrieveConfiguration
+                example: RetrieveConfiguration
+              result:
+                default: Succeed
+                example: Succeed
+              errorCode:
+                default: ""
+                example: ""
+              errorMsg:
+                default: ""
+                example: ""
+    RetrieveVersions:
+      deprecated: false
+      summary: To retreive firmware/software versions
+      description: |
+        This command is to retrieve firmware/software versions.
+        ##### Notice
+        * This message is retained, so should be cleared after receiving. (to clear, send message with zero length payload to this topic)
+        ##### Case of Composite Asset
+        * This message is sent to each sub-asset.
+        * Each sub-asset respond its own firmware/software versions.
+      tags:
+        - name: command
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+            example: true
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/AssetMetaData"
+          - type: object
+            properties:
+              type:
+                default: Command
+                example: Command
+              name:
+                default: RetrieveVersions
+                example: RetrieveVersions
+              sender:
+                example: "g-connect"
+    RetrieveVersionsRes:
+      deprecated: false
+      summary: configuration
+      description: |
+        This response is about versions.
+        ##### Notice
+        * Asset is supposed to publish this message after receiving RetrieveVersions Command.
+      tags:
+        - name: response
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+            example: true
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/AssetMetaData"
+          - $ref: "#/components/schemas/Versions"
+          - $ref: "#/components/schemas/CommandResult"
+          - type: object
+            properties:
+              type:
+                default: Response
+                example: Response
+              name:
+                default: RetrieveVersions
+                example: RetrieveVersions
+              result:
+                default: Succeed
+                example: Succeed
+              errorCode:
+                default: ""
+                example: ""
+              errorMsg:
+                default: ""
+                example: ""
+    Reboot:
+      deprecated: false
+      summary: To Reboot Asset
+      description: |
+        This command is to reboot asset.
+        ##### Notice
+        * This message is retained, so should be cleared after receiving. (to clear, send message with zero length payload to this topic)
+        ##### Case of Composite Asset
+        * This message is sent to each sub-asset.
+        * Software (such as ISP-K05) reboots after recieving this message.
+        * Software's MQTT client respond Accepted message before reboot.
+        * Software's MQTT client respond Succeed/Error message after reboot.
+        * Machine modules (such as RCW-100, RBW-100) do nothing with this message.
+        * Machine modules's MQTT client responds with Succeed result without doing anything.
+      tags:
+        - name: command
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+            example: true
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/SessionMetaData"
+          - type: object
+            properties:
+              type:
+                default: Command
+                example: Command
+              name:
+                default: Reboot
+                example: Reboot
+              sender:
+                example: "bridge-x"
+    RebootRes:
+      deprecated: false
+      summary: reply of reboot asset
+      description: |
+        This response is result of reboot asset.
+        ##### Notice
+        * Asset is supposed to publish this message before reboot with Accepted result, if rebooting is acceptable.
+        * Also be supposed to publish this message after reboot with Succeed/Error result.
+      tags:
+        - name: response
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+            example: true
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/SessionMetaData"
+          - $ref: "#/components/schemas/CommandResultAccept"
+          - type: object
+            properties:
+              type:
+                default: Response
+                example: Response
+              name:
+                default: Reboot
+                example: Reboot
+              result:
+                default: Accepted
+                example: Accepted
+              errorCode:
+                default: ""
+                example: ""
+              errorMsg:
+                default: ""
+                example: ""
+    SelfTest:
+      deprecated: false
+      summary: To Do SelfTest Asset
+      description: |
+        This command is to do self test asset.
+        ##### Notice
+        * This message is retained, so should be cleared after receiving. (to clear, send message with zero length payload to this topic)
+        ##### Case of Composite Asset
+        * This message is sent to each sub-asset.
+        * Software (such as ISP-K05) does nothing with this message.
+        * Software's MQTT client respond Succeed message without doing anything.
+        * Machine module (such as RCW-100, RBW-100) does reset after receiving this message.
+        * Machine module's MQTT client responds with Succeed/Error result after selftest.
+      tags:
+        - name: command
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+            example: true
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/SessionMetaData"
+          - type: object
+            properties:
+              type:
+                default: Command
+                example: Command
+              name:
+                default: SelfTest
+                example: SelfTest
+              sender:
+                example: "bridge-x"
+    SelfTestRes:
+      deprecated: false
+      summary: SelfTest Result
+      description: |
+        This response is result of self test asset.
+        ##### Notice
+        * Asset is supposed to publish this message after receiving SelfTest Command and doing self test.
+      tags:
+        - name: response
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+            example: true
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/SessionMetaData"
+          - $ref: "#/components/schemas/CommandResult"
+          - type: object
+            properties:
+              type:
+                default: Response
+                example: Response
+              name:
+                default: SelfTest
+                example: SelfTest
+    DownloadPackage:
+      deprecated: false
+      summary: To download firmware/software package
+      description: |
+        This command is to download firmware /software, package file.
+        ##### Notice
+        * Protocol will be set same as which asset sent with Connection Message.
+        * If asset needed credentials to access Cloud Storage, username and password would be set.
+        * Downloaded package should be stored in device with packageId.  
+          The package will be installed by Install command message including the packageId.
+        * This message is retained, so should be cleared after receiving. (to clear, send message with zero length payload to this topic)
+        ##### Case of Composite Asset
+        * This message is sent to specified asset only.  
+          (If package is for RBW-100, only RBW-100's MQTT client will be received this message.)
+      tags:
+        - name: command
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+            example: true
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/SessionMetaData"
+          - $ref: "#/components/schemas/DownloadPackage"
+          - type: object
+            properties:
+              type:
+                default: Command
+                example: Command
+              name:
+                default: DownloadPackage
+                example: DownloadPackage
+              sender:
+                example: "bridge-x"
+    DownloadPackageRes:
+      deprecated: false
+      summary: result of downloading firmware/software file.
+      description: |
+        This response is result of downloading firmware/software file.
+        ##### Notice
+        * Asset is supposed to publish this message after receiving DownloadPackage Command and downloading package.
+      tags:
+        - name: response
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+            example: true
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/SessionMetaData"
+          - $ref: "#/components/schemas/CommandResult"
+          - type: object
+            properties:
+              type:
+                default: Response
+                example: Response
+              name:
+                default: DownloadPackage
+                example: DownloadPackage
+    Install:
+      deprecated: false
+      summary: To install firmware/software package
+      description: |
+        This command is to install firmware /software package file.
+        ##### Notice
+        * Install Package which is downloaded and stored with a packageId by DownloadPackage Command ,
+          and the packageId is same as included this command.
+        * This message is retained, so should be cleared after receiving. (to clear, send message with zero length payload to this topic)
+        ##### Case of Composite Asset
+        * This message is sent to specified asset only.  
+          (If package is for RBW-100, only RBW-100's MQTT client will be received this message.)
+      tags:
+        - name: command
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+            example: true
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/SessionMetaData"
+          - $ref: "#/components/schemas/Install"
+          - type: object
+            properties:
+              type:
+                default: Command
+                example: Command
+              name:
+                default: Install
+                example: Install
+              sender:
+                example: "bridge-x"
+    InstallRes:
+      deprecated: false
+      summary: result of installing firmware/software file.
+      description: |
+        This response is result of installing firmware/software file.
+        ##### Notice
+        * Asset is supposed to publish this message after receiving Install Command and installing package.
+      tags:
+        - name: response
+        - name: general
+      headers:
+        type: object
+        properties:
+          qos:
+            $ref: "#/components/schemas/MQTTQoSHeader"
+          retainFlag:
+            $ref: "#/components/schemas/MQTTRetainHeader"
+            example: true
+      payload:
+        allOf:
+          - $ref: "#/components/schemas/MessageBase"
+          - $ref: "#/components/schemas/SessionMetaData"
+          - $ref: "#/components/schemas/CommandResult"
+          - type: object
+            properties:
+              type:
+                default: Response
+                example: Response
+              name:
+                default: Install
+                example: Install
+  schemas:
+    MQTTQoSHeader:
+      title: qos
+      description: Quality of Service
+      type: integer
+      default: 0
+      enum:
+        - 0
+    MQTTRetainHeader:
+      title: retainFlag
+      description: |
+        This flag determines if the message will be saved by the broker for the
+        specified.
+
+        Topic as last known good value. New clients that subscribe to that topic
+        will receive.
+
+        The last retained message on that topic instantly after subscribing.
+        More on retained messages.
+
+        And best practices in one of the next posts.
+      type: boolean
+      default: false
+    MessageBase:
+      title: messageBase
+      description: This is Basic Information of MQTT Message
+      type: object
+      required:
+        - type
+        - name
+        - version
+        - application
+      properties:
+        type:
+          $ref: "#/components/schemas/MessageType"
+        name:
+          $ref: "#/components/schemas/MessageName"
+        version:
+          $ref: "#/components/schemas/MessageVersion"
+        sender:
+          $ref: "#/components/schemas/Sender"
+    MessageType:
+      description: Types of messages for interacting with IoT systems
+      type: string
+      enum:
+        - Event
+        - Command
+        - Response
+      example: Event
+    MessageName:
+      description: A specific message name within the type specified MessageType
+      type: string
+      example: Connected
+    MessageVersion:
+      description: A version of this message
+      type: integer
+      default: 1
+    Sender:
+      description: Application which pub/sub this message
+      type: string
+      example: "asset"
+    AssetMetaData:
+      description: This is metadata of an asset. Assets are not only device such as CI-100, RBG-100, but internal module such as RBW-100,RCW-100,SDRC, and so on, are also able to be an asset.
+      type: object
+      required:
+        - assetMetaData
+      properties:
+        assetMetaData:
+          type: object
+          required:
+            - typeId
+            - assetId
+            - messageId
+          properties:
+            typeId:
+              description: The asset type
+              type: string
+              example: RBG-100
+            assetId:
+              description: The asset ID. This ID is unique within each asset type.
+              type: string
+              example: "010001"
+            messageId:
+              description: message id
+              type: string
+              example: "10101"
+    EventMetaData:
+      description: This is metadata of an asset. Assets are not only device such as CI-100, RBG-100, but internal module such as RBW-100,RCW-100,SDRC, and so on, are also able to be an asset.
+      type: object
+      required:
+        - assetMetaData
+      properties:
+        assetMetaData:
+          type: object
+          required:
+            - typeId
+            - assetId
+          properties:
+            typeId:
+              description: The asset type
+              type: string
+              example: RBG-100
+            assetId:
+              description: The asset ID. This ID is unique within each asset type.
+              type: string
+              example: "010001"
+    SessionMetaData:
+      description: The detailed information of this message
+      type: object
+      required:
+        - assetMetaData
+      properties:
+        assetMetaData:
+          type: object
+          required:
+            - typeId
+            - assetId
+            - sessionId
+            - messageId
+          properties:
+            typeId:
+              description: The asset type
+              type: string
+              example: RBG-100
+            assetId:
+              description: The asset ID. This ID is unique within each asset type.
+              type: string
+              example: "010001"
+            sessionId:
+              description: session id
+              type: string
+              example: 3F2504E0-4F89-11D3-9A0C-0305E82C3301
+            messageId:
+              description: message id
+              type: string
+              example: "10101"
+    SessionTopic:
+      description: The specific topic for the session
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          description: The detailed information of this message
+          type: object
+          required:
+            - sessionId
+            - topicPrefix
+          properties:
+            sessionId:
+              description: session Id
+              type: string
+              example: 3F2504E0-4F89-11D3-9A0C-0305E82C3301
+            topicPrefix:
+              description: topic prefix
+              type: string
+              example: /glory/session/3F2504E0-4F89-11D3-9A0C-0305E82C3301
+    AssetStatus:
+      description: The Status of an Asset
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          description: The detailed information of this message
+          type: object
+          required:
+            - status
+          properties:
+            status:
+              description: status
+              type: string
+              format: ^(Good)|(Error)$
+              enum:
+                - Good
+                - Error
+              example: Error
+            errorCode:
+              description: error code (when status is Error, errorCode is required)
+              type: string
+              example: E0001
+            errorMsg:
+              description: error message (when status is Error, errorMsg is required)
+              type: string
+              example: Something happens in this Asset
+    Inventory:
+      description: The Inventory information
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          type: object
+          required:
+            - cashUnits
+          properties:
+            cashUnits:
+              description: The detailed information of this message
+              type: array
+              items:
+                type: object
+                required:
+                  - unit
+                  - status
+                  - capacity
+                  - denominations
+                properties:
+                  unit:
+                    description: casset name
+                    type: string
+                    example: "casset 1"
+                  status:
+                    description: casset status
+                    type: string
+                    example: Full
+                    required:
+                      - Full
+                      - NearFull
+                      - HasCash
+                      - NearEmpty
+                      - Empty
+                      - Missing
+                      - Fallback
+                  nearFull:
+                    description: border line of near full satatus for this casset
+                    type: number
+                    example: 550
+                  nearEmpty:
+                    description: border line of near empty satatus for this casset
+                    type: number
+                    example: 10
+                  capacity:
+                    description: capacity of this casset
+                    type: number
+                    example: 600
+                  denominations:
+                    description: each inventory by denomination
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - currencyCode
+                        - faceValue
+                        - count
+                      properties:
+                        currencyCode:
+                          description: currency code, ISO 4217 format
+                          type: string
+                          example: "EUR"
+                        faceValue:
+                          description: type of denomination
+                          type: string
+                          example: "20"
+                        count:
+                          description: count number
+                          type: number
+                          example: 0
+                        revision:
+                          description: revision
+                          type: number
+                          example: 0
+    Configuration:
+      description: The detailed information of this message
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          description: The detailed information of this message
+          type: object
+          required:
+            - configurations
+          properties:
+            configuration:
+              description: configuration / assignments
+              type: string
+          example: "_XML_FORMAT_"
+
+    IPAddress:
+      description: The IP Address information
+      type: object
+      properties:
+        detail:
+          description: The detailed information of this message
+          type: object
+          required:
+            - ipAddress
+          properties:
+            ipAddress:
+              description: IP Address
+              type: string
+              example: "127.0.0.1"
+    Protocol:
+      description: The IP Protocol which device wants to use
+      type: object
+      properties:
+        detail:
+          description: The detailed information of this message
+          type: object
+          required:
+            - fileTransferProtocol
+          properties:
+            fileTransferProtocol:
+              description: Protocol for file transfer
+              type: string
+              enum:
+                - https
+                - ftps
+                - s3
+              example: "ftps"
+    Connection:
+      description: The Connection information
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          description: The detailed information of this message
+          type: object
+          required:
+            - connection
+          properties:
+            connection:
+              description: connection status
+              type: string
+              enum:
+                - Connected
+                - Disconnected
+              example: "Connected"
+    Versions:
+      description: The Version information
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          description: The detailed information of this message
+          type: object
+          properites:
+            versions:
+              description: version Information
+              type: array
+              items:
+                type: object
+                required:
+                  - name
+                  - value
+                properties:
+                  name:
+                    description: name
+                    type: string
+                  value:
+                    description: version
+                    type: string
+          example:
+            versions:
+              - name: UpperAP
+                value: C034B
+              - name: RUGeneralization1
+                value: 020C
+              - name: RUParameter2
+                value: "0500"
+    RetrieveLog:
+      description: The Retrieving Log information
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          description: The detailed information of this message
+          type: object
+          required:
+            - protocol
+            - url
+            - filename
+          properties:
+            protocol:
+              description: protocol which is to use sending logs
+              type: string
+              enum:
+                - https
+                - ftps
+                - s3
+              example: "https"
+            url:
+              description: url which is to use sending logs
+              type: string
+              example: "https://glory.ch/rbg100/001030/"
+            filename:
+              description: file name which is to use sending logs
+              type: string
+              example: "file.zip"
+            username:
+              description: username which is to use sending logs
+              type: string
+              example: "asdfas4233523523"
+            password:
+              description: password which is to use sending logs
+              type: string
+              example: "23565rffgvyxvr5434"
+            from:
+              description: to retrieve log from this date
+              type: string
+              example: "2018-09-23"
+            to:
+              description: to retrieve log to this date
+              type: string
+              example: "2018-10-05"
+    LogType:
+      description: The Log Type information
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          description: The detailed information of this message
+          type: object
+          properties:
+            type:
+              type: array
+              items:
+                description: log type
+                type: string
+                enum:
+                  - Business
+                  - Trace
+              example: ["Trace", "Business"]
+    DownloadPackage:
+      description: The Downloading Package information
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          description: The detailed information of this message
+          type: object
+          required:
+            - packageId
+            - protocol
+            - url
+          properties:
+            packageId:
+              description: package id. package file should be stored packageId folder and it will be use by install task with the packageId.
+              type: string
+              example: "12345678-1234-5678-1234-123456789012"
+            protocol:
+              description: protocol which is to use downloading firmware/software package
+              type: string
+              enum:
+                - https
+                - ftps
+                - s3
+              example: "https"
+            url:
+              description: url which is to use downloading firmware/software package
+              type: string
+              example: "https://glory.ch/rbg100/001030/frimware.zip"
+            username:
+              description: username which is to use downloading firmware/software package
+              type: string
+              example: "asdfas4233523523"
+            password:
+              description: password which is to use downloading firmware/software package
+              type: string
+              example: "23565rffgvyxvr5434"
+    Install:
+      description: The Installation information
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          description: The detailed information of this message
+          type: object
+          required:
+            - packageId
+          properties:
+            packageId:
+              description: package id. package file is stored with this packageId folder and it will be installed.
+              type: string
+              example: "12345678-1234-5678-1234-123456789012"
+    PackageInfo:
+      description: The Package information
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          description: The detailed information of this message
+          type: object
+          properties:
+            package:
+              description: firmware/software package information
+              type: array
+              items:
+                type: string
+                example: ["04.35.08_FullPckg for 2.01", "04.35.08_MCUOnly for 2.01"]
+    CommandResult:
+      description: The Result of Command
+      type: object
+      required:
+        - result
+      properties:
+        result:
+          description: result
+          type: string
+          format: ^(Succeed)|(Error)$
+          enum:
+            - Succeed
+            - Error
+          example: Error
+        errorCode:
+          description: error code (when status is Error, errorCode is required)
+          type: string
+          example: E0001
+        errorMsg:
+          description: error message (when status is Error, errorMsg is required)
+          type: string
+          example: Something happens in this Asset
+    CommandResultAccept:
+      description: The Result of Command
+      type: object
+      required:
+        - result
+      properties:
+        result:
+          description: result
+          type: string
+          format: ^(Succeed)|(Accepted)|(Error)$
+          enum:
+            - Succeed
+            - Accepted
+            - Error
+          example: Accepted
+        errorCode:
+          description: error code (when status is Error, errorCode is required)
+          type: string
+          example: E0001
+        errorMsg:
+          description: error message (when status is Error, errorMsg is required)
+          type: string
+          example: Something happens in this Asset
+channels:
+  /glory/g-connect/event/Connection:
+    publish:
+      message:
+        $ref: "#/components/messages/Connection"
+  /glory/g-connect/event/Established:
+    publish:
+      message:
+        $ref: "#/components/messages/Established"
+  /glory/g-connect/event/AssetStatusUpdated:
+    publish:
+      message:
+        $ref: "#/components/messages/AssetStatusUpdated"
+  /glory/g-connect/event/InventoryChanged:
+    publish:
+      message:
+        $ref: "#/components/messages/InventoryChanged"
+  /glory/g-connect/event/ConfigurationChanged:
+    publish:
+      message:
+        $ref: "#/components/messages/ConfigurationChanged"
+  /glory/g-connect/event/FirmwareUpdated:
+    publish:
+      message:
+        $ref: "#/components/messages/FirmwareUpdated"
+  /glory/g-connect/:typeId/:assetId/action/CreateSession:
+    subscribe:
+      message:
+        $ref: "#/components/messages/CreateSession"
+  /glory/g-connect/:typeId/:assetId/action/CloseSession:
+    subscribe:
+      message:
+        $ref: "#/components/messages/CloseSession"
+  /glory/g-connect/:typeId/:assetId/command/RetrieveIpAddress:
+    subscribe:
+      message:
+        $ref: "#/components/messages/RetrieveIpAddress"
+  /glory/g-connect/:typeId/:assetId/response/RetrieveIpAddress:
+    publish:
+      message:
+        $ref: "#/components/messages/RetrieveIpAddressRes"
+  /glory/g-connect/:typeId/:assetId/command/RetrieveVersions:
+    subscribe:
+      message:
+        $ref: "#/components/messages/RetrieveVersions"
+  /glory/g-connect/:typeId/:assetId/response/RetrieveVersions:
+    publish:
+      message:
+        $ref: "#/components/messages/RetrieveVersionsRes"
+  /:session-topic/command/RetrieveLog:
+    subscribe:
+      message:
+        $ref: "#/components/messages/RetrieveLog"
+  /:session-topic/response/RetrieveLog:
+    publish:
+      message:
+        $ref: "#/components/messages/RetrieveLogRes"
+  /:session-topic/command/RetrieveConfiguration:
+    subscribe:
+      message:
+        $ref: "#/components/messages/RetrieveConfiguration"
+  /:session-topic/response/RetrieveConfiguration:
+    publish:
+      message:
+        $ref: "#/components/messages/RetrieveConfigurationRes"
+  /:session-topic/command/Reboot:
+    subscribe:
+      message:
+        $ref: "#/components/messages/Reboot"
+  /:session-topic/response/Reboot:
+    publish:
+      message:
+        $ref: "#/components/messages/RebootRes"
+  /:session-topic/command/SelfTest:
+    subscribe:
+      message:
+        $ref: "#/components/messages/SelfTest"
+  /:session-topic/response/SelfTest:
+    publish:
+      message:
+        $ref: "#/components/messages/SelfTestRes"
+  /:session-topic/command/DownloadPackage:
+    subscribe:
+      message:
+        $ref: "#/components/messages/DownloadPackage"
+  /:session-topic/response/DownloadPackage:
+    publish:
+      message:
+        $ref: "#/components/messages/DownloadPackageRes"
+  /:session-topic/command/Install:
+    subscribe:
+      message:
+        $ref: "#/components/messages/Install"
+  /:session-topic/response/Install:
+    publish:
+      message:
+        $ref: "#/components/messages/InstallRes"

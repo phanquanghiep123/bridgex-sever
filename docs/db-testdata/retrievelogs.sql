@@ -1,0 +1,10 @@
+INSERT INTO retrievelogs VALUES (1,'100001','CI10','Succeed','','',DEFAULT);
+INSERT INTO retrievelogs VALUES (2,'100001','CI10','Succeed','','',DEFAULT);
+INSERT INTO retrievelogs VALUES (2,'200002','CI50','Error','1001','Upload Error1',DEFAULT);
+INSERT INTO retrievelogs VALUES (4,'100001','CI10','Succeed','','',DEFAULT);
+INSERT INTO retrievelogs VALUES (4,'200002','CI50','Error','2002','Upload Error2',DEFAULT);
+INSERT INTO retrievelogs VALUES (6,'300003','CI100','Succeed','','',DEFAULT);
+INSERT INTO retrievelogs VALUES (8,'300003','CI100','Succeed','','',DEFAULT);
+INSERT INTO retrievelogs VALUES (9,'100001','CI10','Succeed','','',DEFAULT);
+INSERT INTO retrievelogs VALUES (9,'200002','CI50','Error','3003','Upload Error3',DEFAULT);
+INSERT INTO retrievelogs VALUES (10,'300003','CI100','Error','4004','Upload Error4',DEFAULT);

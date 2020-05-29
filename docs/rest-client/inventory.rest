@@ -1,0 +1,12 @@
+// asset and inventory
+GET http://localhost:3000/types/CI10/assets/100001/inventory
+
+###
+
+// no inventory
+GET http://localhost:3000/types/CI10/assets/test100/inventory
+
+###
+
+// no asset
+GET http://localhost:3000/types/CI10/assets/100002/inventory

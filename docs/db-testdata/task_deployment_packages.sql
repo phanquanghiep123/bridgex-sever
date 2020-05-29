@@ -1,0 +1,17 @@
+INSERT INTO task_deployment_packages VALUES (1,3);
+INSERT INTO task_deployment_packages VALUES (1,4);
+INSERT INTO task_deployment_packages VALUES (2,3);
+INSERT INTO task_deployment_packages VALUES (2,4);
+INSERT INTO task_deployment_packages VALUES (3,3);
+INSERT INTO task_deployment_packages VALUES (3,4);
+INSERT INTO task_deployment_packages VALUES (4,3);
+INSERT INTO task_deployment_packages VALUES (4,4);
+INSERT INTO task_deployment_packages VALUES (5,1);
+INSERT INTO task_deployment_packages VALUES (6,2);
+INSERT INTO task_deployment_packages VALUES (7,1);
+INSERT INTO task_deployment_packages VALUES (8,2);
+INSERT INTO task_deployment_packages VALUES (9,3);
+INSERT INTO task_deployment_packages VALUES (9,1);
+INSERT INTO task_deployment_packages VALUES (9,2);
+INSERT INTO task_deployment_packages VALUES (10,3);
+INSERT INTO task_deployment_packages VALUES (11,4);

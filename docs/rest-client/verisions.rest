@@ -1,0 +1,13 @@
+// asset and versions
+GET http://localhost:3000/types/CI10/assets/100001/versions
+
+###
+
+// no versions
+GET http://localhost:3000/types/CI10/assets/test100/versions
+
+
+###
+
+// no asset
+GET http://localhost:3000/types/CI10/assets/100002/versions

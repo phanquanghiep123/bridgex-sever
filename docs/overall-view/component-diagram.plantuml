@@ -1,0 +1,34 @@
+@startuml component diagram
+
+node "Bridge-X" {
+  component [Server] as bxs
+  database "Database" as bxsdb
+}
+node "G-Connect" {
+  component [Database Access Service] as das
+  interface  ftp
+  database "Database" as gcondb
+}
+component [ISP-K05] as agent
+interface mqtt
+component [Object Storage] as os
+
+' communication with agent
+agent <.> mqtt: Pub Response & Event, Sub Command
+mqtt  <.> bxs: Pub Command, Sub Response & Event
+
+' database
+bxs -> bxsdb
+bxsdb ..> gcondb: dblink
+das -> gcondb
+
+' communication with G-Connect
+bxs --> das: REST API
+
+' manage log & package
+os    <--> bxs: upload log / get package
+agent <..> ftp: upload log / get package
+ftp   <..> bxs: get log / upload package
+
+
+@enduml

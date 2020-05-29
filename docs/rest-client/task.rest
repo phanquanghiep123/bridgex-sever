@@ -1,0 +1,495 @@
+//----------------------------------------------------------
+// Task Reboot - MQTT連携テスト用
+// /tasks/reboots
+//----------------------------------------------------------
+// 正常（ステータスコード：201）
+POST http://localhost:3100/tasks/reboots
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImFwcElkLTE3ZGMwODNkLTVkZWMtNDdjNS04NGNlLThmZDJlYzMwZWY3Yi0yMDE5LTA5LTIwVDA0OjMxOjUyLjgwMSIsInZlciI6NH0.eyJpc3MiOiJodHRwczovL2pwLXRvay5hcHBpZC5jbG91ZC5pYm0uY29tL29hdXRoL3Y0LzE3ZGMwODNkLTVkZWMtNDdjNS04NGNlLThmZDJlYzMwZWY3YiIsImV4cCI6MTU4OTQ5MDQyNSwiYXVkIjpbImZiYTg3ZGQ0LWRiODgtNDFhNy04ZGJlLTI5ODg1ZjZlNTAxNyJdLCJzdWIiOiJkOTUwZWNjOS0yYWNkLTRmNmMtYTk5ZS02MWRlY2E4NDAzYWUiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYW1yIjpbImNsb3VkX2RpcmVjdG9yeSJdLCJpYXQiOjE1ODk0MDQwMjUsInRlbmFudCI6IjE3ZGMwODNkLTVkZWMtNDdjNS04NGNlLThmZDJlYzMwZWY3YiIsInNjb3BlIjoib3BlbmlkIGFwcGlkX2RlZmF1bHQgYXBwaWRfcmVhZHVzZXJhdHRyIGFwcGlkX3JlYWRwcm9maWxlIGFwcGlkX3dyaXRldXNlcmF0dHIgYXBwaWRfYXV0aGVudGljYXRlZCJ9.AN7M8AyNwjPntoas27i708KBt1G9hjZLt955b5q1WODnl4F_B7XYxSqLntX6wyEaTmjJUxyPp0HZaPxHG3oCDnIbJlEB-pWi0F92Fme6Vp1XJPRnWv-6Tw_wAnHHEC-v9oeCsFSrxlsO9ZqjuIraT5k8wShvdJ6fD1Nuwfndac6sjDKRXSld306emR3yHXPBShrw-9j7lB6PXMN2VVDpt9VuusGNCO8qN9gh5hILi1erZUlvKf8A15gO4fDeQwkgSeBERkxiK1g1o96nuy-qx94KLIDO6cgANAKxtVuQCOUV708yRC4O61NpX977r9hdtzQpr0Ttk_0Io6fpPIEppw
+
+{
+  "memo": "reboot memo",
+  "assets": [
+    // Good
+    {
+      "typeId": "CI10",
+      "assetId": "100001"
+    },
+    // Good
+    {
+      "typeId": "CI50",
+      "assetId": "200002"
+    }
+  ]
+}
+
+###
+
+POST http://localhost:3100/tasks/reboots
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImFwcElkLTE3ZGMwODNkLTVkZWMtNDdjNS04NGNlLThmZDJlYzMwZWY3Yi0yMDE5LTA5LTIwVDA0OjMxOjUyLjgwMSIsInZlciI6NH0.eyJpc3MiOiJodHRwczovL2pwLXRvay5hcHBpZC5jbG91ZC5pYm0uY29tL29hdXRoL3Y0LzE3ZGMwODNkLTVkZWMtNDdjNS04NGNlLThmZDJlYzMwZWY3YiIsImV4cCI6MTU4OTQ5MDQyNSwiYXVkIjpbImZiYTg3ZGQ0LWRiODgtNDFhNy04ZGJlLTI5ODg1ZjZlNTAxNyJdLCJzdWIiOiJkOTUwZWNjOS0yYWNkLTRmNmMtYTk5ZS02MWRlY2E4NDAzYWUiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYW1yIjpbImNsb3VkX2RpcmVjdG9yeSJdLCJpYXQiOjE1ODk0MDQwMjUsInRlbmFudCI6IjE3ZGMwODNkLTVkZWMtNDdjNS04NGNlLThmZDJlYzMwZWY3YiIsInNjb3BlIjoib3BlbmlkIGFwcGlkX2RlZmF1bHQgYXBwaWRfcmVhZHVzZXJhdHRyIGFwcGlkX3JlYWRwcm9maWxlIGFwcGlkX3dyaXRldXNlcmF0dHIgYXBwaWRfYXV0aGVudGljYXRlZCJ9.AN7M8AyNwjPntoas27i708KBt1G9hjZLt955b5q1WODnl4F_B7XYxSqLntX6wyEaTmjJUxyPp0HZaPxHG3oCDnIbJlEB-pWi0F92Fme6Vp1XJPRnWv-6Tw_wAnHHEC-v9oeCsFSrxlsO9ZqjuIraT5k8wShvdJ6fD1Nuwfndac6sjDKRXSld306emR3yHXPBShrw-9j7lB6PXMN2VVDpt9VuusGNCO8qN9gh5hILi1erZUlvKf8A15gO4fDeQwkgSeBERkxiK1g1o96nuy-qx94KLIDO6cgANAKxtVuQCOUV708yRC4O61NpX977r9hdtzQpr0Ttk_0Io6fpPIEppw
+
+{
+  "assets": [
+    // Good
+    {
+      "typeId": "CI10",
+      "assetId": "100001"
+    }
+  ]
+}
+
+###
+
+//----------------------------------------------------------
+// Task SelfTest - MQTT連携テスト用
+// /tasks/selfTests
+//----------------------------------------------------------
+// 正常（ステータスコード：201）
+POST http://localhost:3100/tasks/selfTests
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImFwcElkLTE3ZGMwODNkLTVkZWMtNDdjNS04NGNlLThmZDJlYzMwZWY3Yi0yMDE5LTA5LTIwVDA0OjMxOjUyLjgwMSIsInZlciI6NH0.eyJpc3MiOiJodHRwczovL2pwLXRvay5hcHBpZC5jbG91ZC5pYm0uY29tL29hdXRoL3Y0LzE3ZGMwODNkLTVkZWMtNDdjNS04NGNlLThmZDJlYzMwZWY3YiIsImV4cCI6MTU4OTQ5MDQyNSwiYXVkIjpbImZiYTg3ZGQ0LWRiODgtNDFhNy04ZGJlLTI5ODg1ZjZlNTAxNyJdLCJzdWIiOiJkOTUwZWNjOS0yYWNkLTRmNmMtYTk5ZS02MWRlY2E4NDAzYWUiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYW1yIjpbImNsb3VkX2RpcmVjdG9yeSJdLCJpYXQiOjE1ODk0MDQwMjUsInRlbmFudCI6IjE3ZGMwODNkLTVkZWMtNDdjNS04NGNlLThmZDJlYzMwZWY3YiIsInNjb3BlIjoib3BlbmlkIGFwcGlkX2RlZmF1bHQgYXBwaWRfcmVhZHVzZXJhdHRyIGFwcGlkX3JlYWRwcm9maWxlIGFwcGlkX3dyaXRldXNlcmF0dHIgYXBwaWRfYXV0aGVudGljYXRlZCJ9.AN7M8AyNwjPntoas27i708KBt1G9hjZLt955b5q1WODnl4F_B7XYxSqLntX6wyEaTmjJUxyPp0HZaPxHG3oCDnIbJlEB-pWi0F92Fme6Vp1XJPRnWv-6Tw_wAnHHEC-v9oeCsFSrxlsO9ZqjuIraT5k8wShvdJ6fD1Nuwfndac6sjDKRXSld306emR3yHXPBShrw-9j7lB6PXMN2VVDpt9VuusGNCO8qN9gh5hILi1erZUlvKf8A15gO4fDeQwkgSeBERkxiK1g1o96nuy-qx94KLIDO6cgANAKxtVuQCOUV708yRC4O61NpX977r9hdtzQpr0Ttk_0Io6fpPIEppw
+
+{
+  "memo": "self test memo",
+  "assets": [
+    // Good
+    {
+      "typeId": "CI10",
+      "assetId": "100001"
+    },
+    // Good
+    {
+      "typeId": "CI50",
+      "assetId": "200002"
+    }
+  ]
+}
+
+###
+
+POST http://localhost:3100/tasks/selfTests
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImFwcElkLTE3ZGMwODNkLTVkZWMtNDdjNS04NGNlLThmZDJlYzMwZWY3Yi0yMDE5LTA5LTIwVDA0OjMxOjUyLjgwMSIsInZlciI6NH0.eyJpc3MiOiJodHRwczovL2pwLXRvay5hcHBpZC5jbG91ZC5pYm0uY29tL29hdXRoL3Y0LzE3ZGMwODNkLTVkZWMtNDdjNS04NGNlLThmZDJlYzMwZWY3YiIsImV4cCI6MTU4OTQ5MDQyNSwiYXVkIjpbImZiYTg3ZGQ0LWRiODgtNDFhNy04ZGJlLTI5ODg1ZjZlNTAxNyJdLCJzdWIiOiJkOTUwZWNjOS0yYWNkLTRmNmMtYTk5ZS02MWRlY2E4NDAzYWUiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYW1yIjpbImNsb3VkX2RpcmVjdG9yeSJdLCJpYXQiOjE1ODk0MDQwMjUsInRlbmFudCI6IjE3ZGMwODNkLTVkZWMtNDdjNS04NGNlLThmZDJlYzMwZWY3YiIsInNjb3BlIjoib3BlbmlkIGFwcGlkX2RlZmF1bHQgYXBwaWRfcmVhZHVzZXJhdHRyIGFwcGlkX3JlYWRwcm9maWxlIGFwcGlkX3dyaXRldXNlcmF0dHIgYXBwaWRfYXV0aGVudGljYXRlZCJ9.AN7M8AyNwjPntoas27i708KBt1G9hjZLt955b5q1WODnl4F_B7XYxSqLntX6wyEaTmjJUxyPp0HZaPxHG3oCDnIbJlEB-pWi0F92Fme6Vp1XJPRnWv-6Tw_wAnHHEC-v9oeCsFSrxlsO9ZqjuIraT5k8wShvdJ6fD1Nuwfndac6sjDKRXSld306emR3yHXPBShrw-9j7lB6PXMN2VVDpt9VuusGNCO8qN9gh5hILi1erZUlvKf8A15gO4fDeQwkgSeBERkxiK1g1o96nuy-qx94KLIDO6cgANAKxtVuQCOUV708yRC4O61NpX977r9hdtzQpr0Ttk_0Io6fpPIEppw
+
+{
+  "assets": [
+    // Good
+    {
+      "typeId": "CI10",
+      "assetId": "100001"
+    }
+  ]
+}
+
+###
+
+//----------------------------------------------------------
+// Task Log - MQTT連携テスト用
+// /tasks/logs
+//----------------------------------------------------------
+
+POST http://localhost:3100/tasks/logs
+content-type: application/json
+Authorization: Bearer AAAAABBBBBCCCCCDDDDDEEEEEFFFFFGGGGGG
+
+{
+  "logType": "Business,Trace",
+  "memo": "memo - Business,Trace",
+  "assets": [
+    // Good
+    {
+      "typeId": "CI10",
+      "assetId": "100001"
+    },
+    // Good
+    {
+      "typeId": "CI50",
+      "assetId": "200002"
+    }
+  ]
+}
+
+###
+
+POST http://localhost:3100/tasks/logs
+content-type: application/json
+Authorization: Bearer AAAAABBBBBCCCCCDDDDDEEEEEFFFFFGGGGGG
+
+{
+  "logType": "Business",
+  "memo": "memo - Business",
+  "assets": [
+    // Good
+    {
+      "typeId": "CI10",
+      "assetId": "100001"
+    },
+    // Missing
+    {
+      "typeId": "CI-100",
+      "assetId": "300003"
+    }
+  ]
+}
+
+###
+
+// PUB Retrievelog の resultを"Succeed"に変更
+POST http://localhost:3000/response-message/succeed
+
+###
+
+POST http://localhost:3100/tasks/logs
+content-type: application/json
+Authorization: Bearer AAAAABBBBBCCCCCDDDDDEEEEEFFFFFGGGGGG
+
+{
+  "logType": "Business,Trace",
+  "memo": "memo - Business,Trace",
+  "assets": [
+    // Good
+    {
+      "typeId": "CI10",
+      "assetId": "100001"
+    }
+  ]
+}
+
+###
+
+// PUB Retrievelog の resultを"Error"に変更
+POST http://localhost:3000/response-message/error
+
+###
+
+POST http://localhost:3100/tasks/logs
+content-type: application/json
+Authorization: Bearer AAAAABBBBBCCCCCDDDDDEEEEEFFFFFGGGGGG
+
+{
+  "logType": "Trace",
+  "memo": "memo - Trace",
+  "assets": [
+    // Good
+    {
+      "typeId": "CI10",
+      "assetId": "100001"
+    },
+    // Good
+    {
+      "typeId": "CI50",
+      "assetId": "200002"
+    }
+  ]
+}
+
+###
+
+POST http://localhost:3100/tasks/logs
+content-type: application/json
+Authorization: Bearer AAAAABBBBBCCCCCDDDDDEEEEEFFFFFGGGGGG
+
+{
+  "logType": "Trace",
+  "memo": "memo - Trace",
+  "assets": [
+    // Missing
+    {
+      "typeId": "CI50",
+      "assetId": "200002"
+    }
+  ]
+}
+
+###
+
+//----------------------------------------------------------
+// Task Log
+// /tasks/logs
+//----------------------------------------------------------
+// 正常（ステータスコード：201）
+POST http://localhost:3100/tasks/logs
+content-type: application/json
+Authorization: Bearer AAAAABBBBBCCCCCDDDDDEEEEEFFFFFGGGGGG
+
+{
+  "logType": "Business",
+  "memo": "group of money changers",
+  "assets": [
+    {
+      "typeId": "typeId-001",
+      "assetId": "assetId-001"
+    },
+    {
+      "typeId": "typeId-002",
+      "assetId": "assetId-002"
+    },
+    {
+      "typeId": "typeId-003",
+      "assetId": "assetId-003"
+    }
+  ]
+}
+
+###
+
+// 正常（ステータスコード：201）※ logTypeが複数
+POST http://localhost:3100/tasks/logs
+content-type: application/json
+Authorization: Bearer AAAAABBBBBCCCCCDDDDDEEEEEFFFFFGGGGGG
+
+{
+  "logType": "Business,Trace",
+  "memo": "group of money changers",
+  "assets": [
+    {
+      "typeId": "typeId-001",
+      "assetId": "assetId-001"
+    },
+    {
+      "typeId": "typeId-002",
+      "assetId": "assetId-002"
+    },
+    {
+      "typeId": "typeId-003",
+      "assetId": "assetId-003"
+    }
+  ]
+}
+
+###
+
+// 正常（ステータスコード：201）※ memoの指定無
+POST http://localhost:3100/tasks/logs
+content-type: application/json
+Authorization: Bearer AAAAABBBBBCCCCCDDDDDEEEEEFFFFFGGGGGG
+
+{
+  "logType": "Business",
+  "assets": [
+    {
+      "typeId": "typeId-001",
+      "assetId": "assetId-001"
+    },
+    {
+      "typeId": "typeId-002",
+      "assetId": "assetId-002"
+    },
+    {
+      "typeId": "typeId-003",
+      "assetId": "assetId-003"
+    }
+  ]
+}
+
+###
+
+// 異常（ステータスコード：401）
+POST http://localhost:3100/tasks/logs
+content-type: application/json
+
+{
+  "logType": "Business",
+  "memo": "group of money changers",
+  "assets": [
+    {
+      "typeId": "typeId-001",
+      "assetId": "assetId-001"
+    },
+    {
+      "typeId": "typeId-002",
+      "assetId": "assetId-002"
+    }
+  ]
+}
+
+###
+
+// 異常（ステータスコード：400）
+POST http://localhost:3100/tasks/logs
+content-type: application/json
+Authorization: Bearer AAAAABBBBBCCCCCDDDDDEEEEEFFFFFGGGGGG
+
+{
+  "logType": "Trans",
+  "memo": "group of money changers",
+  "assets": [
+    {
+      "typeId": "",
+      "assetId": "assetId-001"
+    },
+    {
+      "typeId": "typeId-002",
+      "assetId": ""
+    }
+  ]
+}
+
+###
+
+//----------------------------------------------------------
+// Task Reboot
+// /tasks/reboots
+//----------------------------------------------------------
+// 正常（ステータスコード：201）
+POST http://localhost:3100/tasks/reboots
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImFwcElkLTE3ZGMwODNkLTVkZWMtNDdjNS04NGNlLThmZDJlYzMwZWY3Yi0yMDE5LTA5LTIwVDA0OjMxOjUyLjgwMSIsInZlciI6NH0.eyJpc3MiOiJodHRwczovL2pwLXRvay5hcHBpZC5jbG91ZC5pYm0uY29tL29hdXRoL3Y0LzE3ZGMwODNkLTVkZWMtNDdjNS04NGNlLThmZDJlYzMwZWY3YiIsImV4cCI6MTU4ODk4NzIyNiwiYXVkIjpbImZiYTg3ZGQ0LWRiODgtNDFhNy04ZGJlLTI5ODg1ZjZlNTAxNyJdLCJzdWIiOiJkOTUwZWNjOS0yYWNkLTRmNmMtYTk5ZS02MWRlY2E4NDAzYWUiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYW1yIjpbImNsb3VkX2RpcmVjdG9yeSJdLCJpYXQiOjE1ODg5MDA4MjYsInRlbmFudCI6IjE3ZGMwODNkLTVkZWMtNDdjNS04NGNlLThmZDJlYzMwZWY3YiIsInNjb3BlIjoib3BlbmlkIGFwcGlkX2RlZmF1bHQgYXBwaWRfcmVhZHVzZXJhdHRyIGFwcGlkX3JlYWRwcm9maWxlIGFwcGlkX3dyaXRldXNlcmF0dHIgYXBwaWRfYXV0aGVudGljYXRlZCJ9.LKsfsHchNngsRj_wxZS0EKV3pqcyz9ZJRorqJ9Jw3CYs5Uu0UrKh2V8OxXTo0YEzD8-RiH4cu0Byo-b-jTMg12nNuMWvppZKs5aAsVl4aHBPSWi2GQBRH-qKUslCUsy8tDVqdVsAq5SJJDcGmGYeK5IhO0qIyoAOKTJBmGGzfnPIHvryVjb3KfjwTJly0REwQeNAPlyetcXNYEreqGH87Eslusc3Brt_fmGr_NduppyYaoirQgzL4Xkfeoy_fbDwB7iJSs_2cgfstw4FbhQyutejz6nUgR5pCCUKE5_R2ZEks-2ff4xnaomoml8fRHKtnUJcvM5_yp_0rfskh_PvLg
+
+{
+  "memo": "(reboot) group of money changers",
+  "assets": [
+    {
+      "typeId": "typeId-001 (reboot)",
+      "assetId": "assetId-001 (reboot)"
+    },
+    {
+      "typeId": "typeId-002 (reboot)",
+      "assetId": "assetId-002 (reboot)"
+    }
+  ]
+}
+
+###
+
+// 正常（ステータスコード：201）※memo無
+POST http://localhost:3100/tasks/reboots
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImFwcElkLTE3ZGMwODNkLTVkZWMtNDdjNS04NGNlLThmZDJlYzMwZWY3Yi0yMDE5LTA5LTIwVDA0OjMxOjUyLjgwMSIsInZlciI6NH0.eyJpc3MiOiJodHRwczovL2pwLXRvay5hcHBpZC5jbG91ZC5pYm0uY29tL29hdXRoL3Y0LzE3ZGMwODNkLTVkZWMtNDdjNS04NGNlLThmZDJlYzMwZWY3YiIsImV4cCI6MTU4NzYyMjYzOSwiYXVkIjpbImZiYTg3ZGQ0LWRiODgtNDFhNy04ZGJlLTI5ODg1ZjZlNTAxNyJdLCJzdWIiOiJkOTUwZWNjOS0yYWNkLTRmNmMtYTk5ZS02MWRlY2E4NDAzYWUiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYW1yIjpbImNsb3VkX2RpcmVjdG9yeSJdLCJpYXQiOjE1ODc1MzYyMzksInRlbmFudCI6IjE3ZGMwODNkLTVkZWMtNDdjNS04NGNlLThmZDJlYzMwZWY3YiIsInNjb3BlIjoib3BlbmlkIGFwcGlkX2RlZmF1bHQgYXBwaWRfcmVhZHVzZXJhdHRyIGFwcGlkX3JlYWRwcm9maWxlIGFwcGlkX3dyaXRldXNlcmF0dHIgYXBwaWRfYXV0aGVudGljYXRlZCJ9.czzN9gqF8zOTBkxQuh7z-IokpH_kY7OxDKJ2-uJ4NqsitcMkM2-eItk6FbGhwXOk7uhGxMLdHiJzcBjsafrJWUO2pRkE9YR72HZmnnU-9MnCfvx6Nj9oadY73SoAWyJaaCVsC24zLDzPpGkAKSYU9yiaJFdREcBrZ_uicMe9e29i_l1CaxgGythz1ZOVa1ZTsF8gwM0C_S5KkUyDxkF3KDHyUQR11kM_GVuntjnb8hKiiokuN3gZbwZDL5Wmcfw4Pk3sEzpTRGYapDiiPNUTmV5MJ7DnmWhV3sLAtFSv72pHEIzWt36ZZg_qKPFJHr_UoWq_1dYMJD_WvtmHxQC8Pg
+
+{
+  "assets": [
+    {
+      "typeId": "typeId-001 (reboot)",
+      "assetId": "assetId-001 (reboot)"
+    },
+    {
+      "typeId": "typeId-002 (reboot)",
+      "assetId": "assetId-002 (reboot)"
+    }
+  ]
+}
+
+###
+
+// 異常（ステータスコード：401）
+POST http://localhost:3100/tasks/reboots
+content-type: application/json
+
+{
+  "memo": "(reboot) group of money changers",
+  "assets": [
+    {
+      "typeId": "typeId-001 (reboot)",
+      "assetId": "assetId-001 (reboot)"
+    },
+    {
+      "typeId": "typeId-002 (reboot)",
+      "assetId": "assetId-002 (reboot)"
+    }
+  ]
+}
+
+###
+
+// 異常（ステータスコード：400）
+POST http://localhost:3100/tasks/reboots
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImFwcElkLTE3ZGMwODNkLTVkZWMtNDdjNS04NGNlLThmZDJlYzMwZWY3Yi0yMDE5LTA5LTIwVDA0OjMxOjUyLjgwMSIsInZlciI6NH0.eyJpc3MiOiJodHRwczovL2pwLXRvay5hcHBpZC5jbG91ZC5pYm0uY29tL29hdXRoL3Y0LzE3ZGMwODNkLTVkZWMtNDdjNS04NGNlLThmZDJlYzMwZWY3YiIsImV4cCI6MTU4NzYyMjYzOSwiYXVkIjpbImZiYTg3ZGQ0LWRiODgtNDFhNy04ZGJlLTI5ODg1ZjZlNTAxNyJdLCJzdWIiOiJkOTUwZWNjOS0yYWNkLTRmNmMtYTk5ZS02MWRlY2E4NDAzYWUiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYW1yIjpbImNsb3VkX2RpcmVjdG9yeSJdLCJpYXQiOjE1ODc1MzYyMzksInRlbmFudCI6IjE3ZGMwODNkLTVkZWMtNDdjNS04NGNlLThmZDJlYzMwZWY3YiIsInNjb3BlIjoib3BlbmlkIGFwcGlkX2RlZmF1bHQgYXBwaWRfcmVhZHVzZXJhdHRyIGFwcGlkX3JlYWRwcm9maWxlIGFwcGlkX3dyaXRldXNlcmF0dHIgYXBwaWRfYXV0aGVudGljYXRlZCJ9.czzN9gqF8zOTBkxQuh7z-IokpH_kY7OxDKJ2-uJ4NqsitcMkM2-eItk6FbGhwXOk7uhGxMLdHiJzcBjsafrJWUO2pRkE9YR72HZmnnU-9MnCfvx6Nj9oadY73SoAWyJaaCVsC24zLDzPpGkAKSYU9yiaJFdREcBrZ_uicMe9e29i_l1CaxgGythz1ZOVa1ZTsF8gwM0C_S5KkUyDxkF3KDHyUQR11kM_GVuntjnb8hKiiokuN3gZbwZDL5Wmcfw4Pk3sEzpTRGYapDiiPNUTmV5MJ7DnmWhV3sLAtFSv72pHEIzWt36ZZg_qKPFJHr_UoWq_1dYMJD_WvtmHxQC8Pg
+
+{
+  "memo": "(reboot) group of money changers",
+  "assets": [
+    {
+      "typeId": "typeId-001 (reboot)"
+    },
+    {
+      "typeId": "typeId-002 (reboot)",
+      "assetId": "assetId-002 (reboot)"
+    }
+  ]
+}
+
+###
+
+//----------------------------------------------------------
+// Task SelfTest
+// /tasks/selfTests
+//----------------------------------------------------------
+// 正常（ステータスコード：201）
+POST http://localhost:3100/tasks/selfTests
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImFwcElkLTE3ZGMwODNkLTVkZWMtNDdjNS04NGNlLThmZDJlYzMwZWY3Yi0yMDE5LTA5LTIwVDA0OjMxOjUyLjgwMSIsInZlciI6NH0.eyJpc3MiOiJodHRwczovL2pwLXRvay5hcHBpZC5jbG91ZC5pYm0uY29tL29hdXRoL3Y0LzE3ZGMwODNkLTVkZWMtNDdjNS04NGNlLThmZDJlYzMwZWY3YiIsImV4cCI6MTU4ODk4NzIyNiwiYXVkIjpbImZiYTg3ZGQ0LWRiODgtNDFhNy04ZGJlLTI5ODg1ZjZlNTAxNyJdLCJzdWIiOiJkOTUwZWNjOS0yYWNkLTRmNmMtYTk5ZS02MWRlY2E4NDAzYWUiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYW1yIjpbImNsb3VkX2RpcmVjdG9yeSJdLCJpYXQiOjE1ODg5MDA4MjYsInRlbmFudCI6IjE3ZGMwODNkLTVkZWMtNDdjNS04NGNlLThmZDJlYzMwZWY3YiIsInNjb3BlIjoib3BlbmlkIGFwcGlkX2RlZmF1bHQgYXBwaWRfcmVhZHVzZXJhdHRyIGFwcGlkX3JlYWRwcm9maWxlIGFwcGlkX3dyaXRldXNlcmF0dHIgYXBwaWRfYXV0aGVudGljYXRlZCJ9.LKsfsHchNngsRj_wxZS0EKV3pqcyz9ZJRorqJ9Jw3CYs5Uu0UrKh2V8OxXTo0YEzD8-RiH4cu0Byo-b-jTMg12nNuMWvppZKs5aAsVl4aHBPSWi2GQBRH-qKUslCUsy8tDVqdVsAq5SJJDcGmGYeK5IhO0qIyoAOKTJBmGGzfnPIHvryVjb3KfjwTJly0REwQeNAPlyetcXNYEreqGH87Eslusc3Brt_fmGr_NduppyYaoirQgzL4Xkfeoy_fbDwB7iJSs_2cgfstw4FbhQyutejz6nUgR5pCCUKE5_R2ZEks-2ff4xnaomoml8fRHKtnUJcvM5_yp_0rfskh_PvLg
+
+{
+  "memo": "(selfTest) group of money changers",
+  "assets": [
+    {
+      "typeId": "typeId-001 (selfTest)",
+      "assetId": "assetId-001 (selfTest)"
+    },
+    {
+      "typeId": "typeId-002 (selfTest)",
+      "assetId": "assetId-002 (selfTest)"
+    }
+  ]
+}
+
+###
+
+// 正常（ステータスコード：201）※memo無
+POST http://localhost:3100/tasks/selfTests
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImFwcElkLTE3ZGMwODNkLTVkZWMtNDdjNS04NGNlLThmZDJlYzMwZWY3Yi0yMDE5LTA5LTIwVDA0OjMxOjUyLjgwMSIsInZlciI6NH0.eyJpc3MiOiJodHRwczovL2pwLXRvay5hcHBpZC5jbG91ZC5pYm0uY29tL29hdXRoL3Y0LzE3ZGMwODNkLTVkZWMtNDdjNS04NGNlLThmZDJlYzMwZWY3YiIsImV4cCI6MTU4NzYyMjYzOSwiYXVkIjpbImZiYTg3ZGQ0LWRiODgtNDFhNy04ZGJlLTI5ODg1ZjZlNTAxNyJdLCJzdWIiOiJkOTUwZWNjOS0yYWNkLTRmNmMtYTk5ZS02MWRlY2E4NDAzYWUiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYW1yIjpbImNsb3VkX2RpcmVjdG9yeSJdLCJpYXQiOjE1ODc1MzYyMzksInRlbmFudCI6IjE3ZGMwODNkLTVkZWMtNDdjNS04NGNlLThmZDJlYzMwZWY3YiIsInNjb3BlIjoib3BlbmlkIGFwcGlkX2RlZmF1bHQgYXBwaWRfcmVhZHVzZXJhdHRyIGFwcGlkX3JlYWRwcm9maWxlIGFwcGlkX3dyaXRldXNlcmF0dHIgYXBwaWRfYXV0aGVudGljYXRlZCJ9.czzN9gqF8zOTBkxQuh7z-IokpH_kY7OxDKJ2-uJ4NqsitcMkM2-eItk6FbGhwXOk7uhGxMLdHiJzcBjsafrJWUO2pRkE9YR72HZmnnU-9MnCfvx6Nj9oadY73SoAWyJaaCVsC24zLDzPpGkAKSYU9yiaJFdREcBrZ_uicMe9e29i_l1CaxgGythz1ZOVa1ZTsF8gwM0C_S5KkUyDxkF3KDHyUQR11kM_GVuntjnb8hKiiokuN3gZbwZDL5Wmcfw4Pk3sEzpTRGYapDiiPNUTmV5MJ7DnmWhV3sLAtFSv72pHEIzWt36ZZg_qKPFJHr_UoWq_1dYMJD_WvtmHxQC8Pg
+
+{
+  "assets": [
+    {
+      "typeId": "typeId-001 (selfTest)",
+      "assetId": "assetId-001 (selfTest)"
+    },
+    {
+      "typeId": "typeId-002 (selfTest)",
+      "assetId": "assetId-002 (selfTest)"
+    }
+  ]
+}
+
+###
+
+// 異常（ステータスコード：401）
+POST http://localhost:3100/tasks/selfTests
+content-type: application/json
+
+{
+  "assets": [
+    {
+      "typeId": "typeId-001 (selfTest)",
+      "assetId": "assetId-001 (selfTest)"
+    },
+    {
+      "typeId": "typeId-002 (selfTest)",
+      "assetId": "assetId-002 (selfTest)"
+    }
+  ]
+}
+
+###
+
+// 異常（ステータスコード：400）
+POST http://localhost:3100/tasks/selfTests
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImFwcElkLTE3ZGMwODNkLTVkZWMtNDdjNS04NGNlLThmZDJlYzMwZWY3Yi0yMDE5LTA5LTIwVDA0OjMxOjUyLjgwMSIsInZlciI6NH0.eyJpc3MiOiJodHRwczovL2pwLXRvay5hcHBpZC5jbG91ZC5pYm0uY29tL29hdXRoL3Y0LzE3ZGMwODNkLTVkZWMtNDdjNS04NGNlLThmZDJlYzMwZWY3YiIsImV4cCI6MTU4NzYyMjYzOSwiYXVkIjpbImZiYTg3ZGQ0LWRiODgtNDFhNy04ZGJlLTI5ODg1ZjZlNTAxNyJdLCJzdWIiOiJkOTUwZWNjOS0yYWNkLTRmNmMtYTk5ZS02MWRlY2E4NDAzYWUiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYW1yIjpbImNsb3VkX2RpcmVjdG9yeSJdLCJpYXQiOjE1ODc1MzYyMzksInRlbmFudCI6IjE3ZGMwODNkLTVkZWMtNDdjNS04NGNlLThmZDJlYzMwZWY3YiIsInNjb3BlIjoib3BlbmlkIGFwcGlkX2RlZmF1bHQgYXBwaWRfcmVhZHVzZXJhdHRyIGFwcGlkX3JlYWRwcm9maWxlIGFwcGlkX3dyaXRldXNlcmF0dHIgYXBwaWRfYXV0aGVudGljYXRlZCJ9.czzN9gqF8zOTBkxQuh7z-IokpH_kY7OxDKJ2-uJ4NqsitcMkM2-eItk6FbGhwXOk7uhGxMLdHiJzcBjsafrJWUO2pRkE9YR72HZmnnU-9MnCfvx6Nj9oadY73SoAWyJaaCVsC24zLDzPpGkAKSYU9yiaJFdREcBrZ_uicMe9e29i_l1CaxgGythz1ZOVa1ZTsF8gwM0C_S5KkUyDxkF3KDHyUQR11kM_GVuntjnb8hKiiokuN3gZbwZDL5Wmcfw4Pk3sEzpTRGYapDiiPNUTmV5MJ7DnmWhV3sLAtFSv72pHEIzWt36ZZg_qKPFJHr_UoWq_1dYMJD_WvtmHxQC8Pg
+
+{
+  "assets": [
+    {
+      "typeId": "typeId-001 (selfTest)"
+    },
+    {
+      "typeId": "typeId-002 (selfTest)",
+      "assetId": "assetId-002 (selfTest)"
+    }
+  ]
+}

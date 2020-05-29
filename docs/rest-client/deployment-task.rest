@@ -1,0 +1,16 @@
+POST http://localhost:3000/tasks/deployments
+content-type: application/json
+Authorization: Bearer token
+
+{
+  "name": "deployment task",
+  "packages": [
+    "64676fdc-20d9-4cad-811c-7e347422f38c"
+  ],
+  "assets": [
+    {
+      "typeId": "CI10",
+      "assetId": "100001"
+    }
+  ]
+}

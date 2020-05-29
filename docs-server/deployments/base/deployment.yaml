@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: bridge-x-server-docs
+  labels:
+    app: bridge-x-server-docs
+spec:
+  template:
+    metadata:
+      labels:
+        app: bridge-x-server-docs
+    spec:
+      restartPolicy: Always
+      containers:
+        - image: de.icr.io/bridge-x/bridge-x-server-docs:0.0.1
+          name: bridge-x-server-docs
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 3000
+          resources:
+            limits:
+              memory: "50Mi"
+              cpu: "50m"
+          env:
+            - name: SERVER_PORT
+              value: "3000"
+          envFrom:
+            - configMapRef:
+                name: bridge-x-server-docs

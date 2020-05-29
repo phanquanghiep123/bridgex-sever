@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: ingress
+  annotations:
+    ingress.kubernetes.io/enable-cors: "true"
+    ingress.bluemix.net/redirect-to-https: "true"
+    ingress.bluemix.net/hsts: "enabled=true includeSubdomains=true"
+    # ingress.bluemix.net/rewrite-path: |
+    #   serviceName=bridge-x-server-docs-master rewrite=/;
+    #   serviceName=bridge-x-server-docs-develop rewrite=/;
+    ingress.bluemix.net/appid-auth: |
+      serviceName=bridge-x-server-docs-master bindSecret=binding-g-enterprise-dev-app-id namespace=docs requestType=web;
+      serviceName=bridge-x-server-docs-develop bindSecret=binding-g-enterprise-dev-app-id namespace=docs requestType=web;
+spec:
+  tls:
+    - hosts:
+        - docs.glory-cloud.dev
+      secretName: tls-cert-key-wildcard-glory-cloud-dev
+
+  rules:
+    - host: docs.glory-cloud.dev
+      http:
+        paths:
+          - path: /bridge-x-server/master/
+            backend:
+              serviceName: bridge-x-server-docs-master
+              servicePort: http
+          - path: /bridge-x-server/develop/
+            backend:
+              serviceName: bridge-x-server-docs-develop
+              servicePort: http

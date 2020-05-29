@@ -1,0 +1,7 @@
+.git
+.githooks
+node_modules/
+dist/
+test/
+coverage/
+.env

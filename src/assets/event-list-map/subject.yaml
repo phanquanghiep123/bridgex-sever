@@ -1,0 +1,32 @@
+event:
+  connected: "Device ${assetId} / ${typeId} : Connected ( IP Address : ${ipAddress} )"
+  disconnected: "Device ${assetId} / ${typeId} : Disconnected"
+  established: "Device ${assetId} / ${typeId} : Established versions：${versions}"
+  assetStatusError: "Device ${assetId} / ${typeId} : Error : ${errorCode} ( ${errorMessage} )"
+  firmwareUpdated: "Device ${assetId} / ${typeId} : Firmware updated ${packageList}"
+task:
+  downloadPackage:
+    create: "Create Task ( Download Package : ${packageName} )"
+    execute: "Start Task ( Download Package : ${packageName} )"
+    success: "Success Task ( Download Package : ${packageName} )"
+    fail: "Fail Task ( Download Package : ${packageName} ) Error : ${errorResult}"
+  install:
+    create: "Create Task ( Install : ${packageName} )"
+    execute: "Start Task ( Install : ${packageName} )"
+    success: "Success Task ( Install : ${packageName} )"
+    fail: "Fail Task ( Install : ${packageName} ) Error : ${errorResult}"
+  logs:
+    create: "Create Task ( Retrieve Log : ${logType} )"
+    execute: "Start Task ( Retrieve Log : ${logType} )"
+    success: "Success Task ( Retrieve Log : ${logType} )"
+    fail: "Fail Task ( Retrieve Log : ${logType} ) Error : ${errorResult}"
+  reboots:
+    create: "Create Task ( Reboot )"
+    execute: "Start Task ( Reboot )"
+    success: "Success Task ( Reboot )"
+    fail: "Fail Task ( Reboot ) Error : ${errorResult}"
+  selftests:
+    create: "Create Task ( Self Test )"
+    execute: "Start Task ( Self Test )"
+    success: "Success Task ( Self Test )"
+    fail: "Fail Task ( Self Test ) Error : ${errorResult}"

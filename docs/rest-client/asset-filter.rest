@@ -1,0 +1,188 @@
+//----------------------------------------------------------
+// Model
+//----------------------------------------------------------
+
+// STATUS: 200
+GET http://localhost:3100/types
+
+###
+
+//----------------------------------------------------------
+// Region
+//----------------------------------------------------------
+
+// STATUS: 200
+GET http://localhost:3100/regions
+
+###
+
+//----------------------------------------------------------
+// Organization
+//----------------------------------------------------------
+
+// STATUS: 200
+GET http://localhost:3100/customers
+
+###
+
+//----------------------------------------------------------
+// Location
+//----------------------------------------------------------
+
+// STATUS: 200
+GET http://localhost:3100/customers/GLORY 01 LTD./locations
+
+###
+
+// STATUS: 200
+GET http://localhost:3100/customers/GLORY 04 LTD./locations
+
+###
+
+// STATUS: 200
+GET http://localhost:3100/customers/EMPTY/locations
+
+###
+
+// STATUS: 404
+GET http://localhost:3100/customers//locations
+
+###
+
+//----------------------------------------------------------
+// Asset (Filter)
+//----------------------------------------------------------
+
+// STATUS: 200
+GET http://localhost:3100/bulk/assets/
+
+###
+
+// STATUS: 200 (Freeword Search)
+GET http://localhost:3100/bulk/assets/?text=GATEWAY%20@ASSET
+
+###
+
+// STATUS: 200 (Freeword Search)
+GET http://localhost:3100/bulk/assets/?text=GATEWAY%20@ASSET%20National
+
+###
+
+// STATUS: 200 (Separator is full-width space)
+GET http://localhost:3100/bulk/assets/?text=GATEWAY　@ASSET　National
+
+###
+
+// STATUS: 200 (Separated by multiple spaces)
+GET http://localhost:3100/bulk/assets/?text=GATEWAY%20%20%20@ASSET%20　%20National
+
+###
+
+// STATUS: 200 (case insensitive)
+GET http://localhost:3100/bulk/assets/?text=GaTeWaY-99
+
+###
+
+//----------------------------------------------------------
+// Asset (Sort)
+//----------------------------------------------------------
+
+// STATUS: 200 (Default)
+GET http://localhost:3100/bulk/assets/
+
+###
+
+// STATUS: 200 (assetId ASC)
+GET http://localhost:3100/bulk/assets/?sortName=assetId&sort=asc
+
+###
+
+// STATUS: 200 (assetId DESC)
+GET http://localhost:3100/bulk/assets/?sortName=assetId&sort=desc
+
+###
+
+// STATUS: 200 (typeId ASC)
+GET http://localhost:3100/bulk/assets/?sortName=typeId&sort=asc
+
+###
+
+// STATUS: 200 (typeId DESC)
+GET http://localhost:3100/bulk/assets/?sortName=typeId&sort=desc
+
+###
+
+// STATUS: 200 (customerId ASC)
+GET http://localhost:3100/bulk/assets/?sortName=customerId&sort=asc
+
+###
+
+// STATUS: 200 (customerId DESC)
+GET http://localhost:3100/bulk/assets/?sortName=customerId&sort=desc
+
+###
+
+// STATUS: 200 (locationId ASC)
+GET http://localhost:3100/bulk/assets/?sortName=locationId&sort=asc
+
+###
+
+// STATUS: 200 (locationId DESC)
+GET http://localhost:3100/bulk/assets/?sortName=locationId&sort=desc
+
+###
+
+// STATUS: 200 (regionId ASC)
+GET http://localhost:3100/bulk/assets/?sortName=regionId&sort=asc
+
+###
+
+// STATUS: 200 (regionId DESC)
+GET http://localhost:3100/bulk/assets/?sortName=regionId&sort=desc
+
+###
+
+// STATUS: 200 (alias ASC)
+GET http://localhost:3100/bulk/assets/?sortName=alias&sort=asc
+
+###
+
+// STATUS: 200 (alias DESC)
+GET http://localhost:3100/bulk/assets/?sortName=alias&sort=desc
+
+###
+
+// STATUS: 200 (ipAddress ASC)
+GET http://localhost:3100/bulk/assets/?sortName=ipAddress&sort=asc
+
+###
+
+// STATUS: 200 (ipAddress DESC)
+GET http://localhost:3100/bulk/assets/?sortName=ipAddress&sort=desc
+
+###
+
+// STATUS: 200 (status ASC)
+GET http://localhost:3100/bulk/assets/?sortName=status&sort=asc
+
+###
+
+// STATUS: 200 (status DESC)
+GET http://localhost:3100/bulk/assets/?sortName=status&sort=desc
+
+###
+
+// STATUS: 200 (installationDate ASC)
+GET http://localhost:3100/bulk/assets/?sortName=installationDate&sort=asc
+
+###
+
+// STATUS: 200 (installationDate DESC)
+GET http://localhost:3100/bulk/assets/?sortName=installationDate&sort=desc
+
+###
+
+// STATUS: 400
+GET http://localhost:3100/bulk/assets/?sortName=size&sort=asc
+
+###

@@ -1,0 +1,105 @@
+//----------------------------------------------------------
+// tasks
+//----------------------------------------------------------
+
+// STATUS: 200
+GET http://localhost:3000/tasks
+
+###
+
+// QUERYパラメータチェック（ステータスコード：200）
+// 各QUERYパラメータについて設定して確認。検索結果0件の場合エラーにならず[]が返ってくること。
+GET http://localhost:3000/tasks?limit=0&offset=1
+
+###
+
+// QUERYパラメータバリデーションエラー（ステータスコード：400）
+// 型不正、長さ不正、値を未設定（?limit=）
+GET http://localhost:3000/tasks?limit=aaaaa
+
+###
+
+//******************************************
+// フリーワード検索
+//******************************************
+
+// 複合検索
+GET http://localhost:3000/tasks?text=progress trace　　　retrieve
+
+###
+
+// status
+GET http://localhost:3000/tasks?text=progress
+
+###
+
+// name
+GET http://localhost:3000/tasks?text=task-dep
+
+
+###
+
+// taskType
+GET http://localhost:3000/tasks?text=RetrieveLog
+
+###
+
+// createdBy
+GET http://localhost:3000/tasks?text=taro
+
+###
+
+// logType
+GET http://localhost:3000/tasks?text=trace
+
+###
+
+// memo
+GET http://localhost:3000/tasks?text=memo-0000000000-0000000009
+
+###
+
+//******************************************
+// ソート
+//******************************************
+// status asc
+GET http://localhost:3000/tasks?sortName=status&sort=asc
+
+###
+
+// status desc
+GET http://localhost:3000/tasks?sortName=status&sort=desc
+
+###
+
+// name asc
+GET http://localhost:3000/tasks?sortName=name&sort=asc
+
+###
+
+// name desc
+GET http://localhost:3000/tasks?sortName=name&sort=desc
+
+###
+
+// taskType asc
+GET http://localhost:3000/tasks?sortName=taskType&sort=asc
+
+###
+
+// taskType desc
+GET http://localhost:3000/tasks?sortName=taskType&sort=desc
+
+###
+
+// updateDate asc
+GET http://localhost:3000/tasks?sortName=updateDate&sort=asc
+
+###
+
+// updateDate desc
+GET http://localhost:3000/tasks?sortName=updateDate&sort=desc
+
+
+
+

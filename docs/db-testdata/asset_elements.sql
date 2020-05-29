@@ -1,0 +1,11 @@
+INSERT INTO asset_elements (type_id, asset_id, ip_address, note) VALUES ('CI10', '@9MDTXC8L', '192.168.0.1', 'teller machine-1');
+INSERT INTO asset_elements (type_id, asset_id, ip_address, note) VALUES ('CI10', '@ZAL5WYUR', '', 'note');
+INSERT INTO asset_elements (type_id, asset_id, ip_address, note) VALUES ('CI10', '@YCS1KAGR', '192.168.0.2', '');
+INSERT INTO asset_elements (type_id, asset_id, ip_address, note) VALUES ('CI10', '@999000', '192.168.0.23', 'my note');
+INSERT INTO asset_elements (type_id, asset_id, ip_address, note) VALUES ('CI10', '@987000', '192.168.0.33', 'my note');
+INSERT INTO asset_elements (type_id, asset_id, ip_address, note) VALUES ('CI10', '500005', '192.168.0.211', '');
+INSERT INTO asset_elements (type_id, asset_id, ip_address, note) VALUES ('CI10', '100001', '127.0.1.100', 'my teller machine-1');
+INSERT INTO asset_elements (type_id, asset_id, ip_address, note) VALUES ('CI10', 'test7000', '192.168.0.7', 'test teller');
+INSERT INTO asset_elements (type_id, asset_id, ip_address, note) VALUES ('CI10', 'test100', '192.168.0.111', 'test teller');
+INSERT INTO asset_elements (type_id, asset_id, ip_address, note) VALUES ('CI10', 'test200', '192.168.0.11', 'test teller');
+INSERT INTO asset_elements (type_id, asset_id, ip_address, note) VALUES ('CI100', '300003', '', '');

@@ -1,0 +1,32 @@
+[
+  {
+    "unit": "casset 3",
+    "status": "Full",
+    "nearFull": 550,
+    "nearEmpty": 10,
+    "capacity": 600,
+    "denominations": [
+      {
+        "currencyCode": "EUR",
+        "faceValue": "20",
+        "count": 0,
+        "revision": 0
+      }
+    ]
+  },
+  {
+    "unit": "casset 2",
+    "status": "NearFull",
+    "nearFull": 550,
+    "nearEmpty": 10,
+    "capacity": 600,
+    "denominations": [
+      {
+        "currencyCode": "EUR",
+        "faceValue": "20",
+        "count": 0,
+        "revision": 0
+      }
+    ]
+  }
+]

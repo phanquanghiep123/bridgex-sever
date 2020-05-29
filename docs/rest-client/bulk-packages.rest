@@ -1,0 +1,49 @@
+//----------------------------------------------------------------
+// packages status
+//----------------------------------------------------------------
+POST http://localhost:3100/bulk/packages/status
+Content-Type: application/json
+
+[
+  {
+    "packageId": "{aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa}"
+  },
+  {
+    "packageId": "{bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb}"
+  },
+  {
+    "packageId": "{cccccccc-cccc-cccc-cccc-cccccccccccc}"
+  },
+  {
+    "packageId": "{dddddddd-dddd-dddd-dddd-dddddddddddd}"
+  }
+]
+
+###
+
+POST http://localhost:3100/bulk/packages/status
+Content-Type: application/json
+
+[
+  {
+    "packageId": "{cccccccc-cccc-cccc-cccc-cccccccccccc}"
+  }
+]
+
+###
+
+POST http://localhost:3100/bulk/packages/status
+Content-Type: application/json
+
+[]
+
+###
+
+POST http://localhost:3100/bulk/packages/status
+Content-Type: application/json
+
+[
+  {}
+]
+
+###

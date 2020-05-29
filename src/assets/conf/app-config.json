@@ -1,0 +1,55 @@
+{
+  "app": {
+    "port": 3000,
+    "production": true
+  },
+  "postgres": {
+    "host": "localhost",
+    "database": "postgres",
+    "port": 5432,
+    "user": "dev",
+    "password": "secret",
+    "keepAlive": true,
+    "ssl": false,
+    "certPath": "/app/certs/postgres.crt"
+  },
+  "mqtt": {
+    "hostname": "localhost",
+    "port": 1883,
+    "protocol": "mqtt",
+    "protocolVersion": 4,
+    "rejectUnauthorized": false
+  },
+  "gConnect": {
+    "dasBaseUrl": "http://localhost:3001",
+    "userAuthBaseUrl": "https://localhost:3002"
+  },
+  "objectStorage": {
+    "endpoint": "https://s3.jp-tok.cloud-object-storage.appdomain.cloud",
+    "port": "",
+    "bucket": "bridge-x-packages",
+    "accessKeyId": "",
+    "secretAccessKey": "",
+    "pathPrefix": "",
+    "assetLogsPrefix": "asset-logs",
+    "proxy": ""
+  },
+  "ftp": {
+    "protocol": "ftp",
+    "host": "ftp.glory-cloud.dev",
+    "port": "21",
+    "user": "testuser1",
+    "pass": "password1",
+    "pathPrefix": ""
+  },
+  "ftpClient": {
+    "host": "ftp.glory-cloud.dev",
+    "port": 21,
+    "secure": false,
+    "user": "testuser1",
+    "password": "password1"
+  },
+  "persistentVolume": {
+    "validatePackageTmpDir": "/app/temp"
+  }
+}

@@ -1,0 +1,125 @@
+GET http://localhost:3000/packages
+
+###
+GET http://localhost:3000/packages
+    ?limit=10
+    &offset=0
+    &status=Complete
+
+###
+
+//----------------------------------------------------------------
+// free text search
+//----------------------------------------------------------------
+// default test
+GET http://localhost:3000/packages?text=summary02 CI-10 fw002
+
+###
+
+// extra space
+GET http://localhost:3000/packages?text=summary02    CI-10　　　　fw002
+
+###
+
+// case insensitive
+GET http://localhost:3000/packages?text=compLete
+
+###
+
+// partial match
+GET http://localhost:3000/packages?text=comp
+
+###
+
+// name
+GET http://localhost:3000/packages?text=CI-100_4.22
+
+###
+
+// status
+GET http://localhost:3000/packages?text=Complete
+
+###
+
+// uploadBy
+GET http://localhost:3000/packages?text=hoge
+
+###
+
+// summary
+GET http://localhost:3000/packages?text=summary04
+
+###
+
+// description
+GET http://localhost:3000/packages?text=description03
+
+###
+
+// model
+GET http://localhost:3000/packages?text=CI-20
+
+###
+
+// elementsName
+GET http://localhost:3000/packages?text=fw004-001
+
+###
+
+// elementsVersion
+GET http://localhost:3000/packages?text=v002-003
+
+###
+
+// memo
+GET http://localhost:3000/packages?text=memo03
+
+###
+
+//----------------------------------------------------------------
+// sort
+//----------------------------------------------------------------
+
+// default
+GET http://localhost:3000/packages
+
+###
+
+// name asc
+GET http://localhost:3000/packages?sortName=name&sort=asc
+
+###
+
+// name desc
+GET http://localhost:3000/packages?sortName=name&sort=desc
+
+###
+
+// status asc
+GET http://localhost:3000/packages?sortName=status&sort=asc
+
+###
+
+// status desc
+GET http://localhost:3000/packages?sortName=status&sort=desc
+
+###
+
+// summary asc
+GET http://localhost:3000/packages?sortName=summary&sort=asc
+
+###
+
+// summary desc
+GET http://localhost:3000/packages?sortName=summary&sort=desc
+
+###
+
+// date asc
+GET http://localhost:3000/packages?sortName=date&sort=asc
+
+###
+
+// date desc
+GET http://localhost:3000/packages?sortName=date&sort=desc
+

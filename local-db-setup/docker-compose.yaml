@@ -1,0 +1,29 @@
+version: "3"
+services:
+  gconnect-postgres:
+    image: postgres:10.6
+    container_name: gconnect-db
+    ports:
+      - 5434:5432
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - ./setup/gconnect-ddl:/docker-entrypoint-initdb.d
+
+  bridgex-postgres:
+    image: postgres:10.6
+    container_name: bridgex-db
+    depends_on:
+      - "gconnect-postgres"
+    ports:
+      - 5433:5432
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - ./setup/bridgex-ddl:/docker-entrypoint-initdb.d

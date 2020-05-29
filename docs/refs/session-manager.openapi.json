@@ -1,0 +1,209 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "G-Connect - Session Manager",
+    "version": "0.0.1",
+    "description": "This service is responsible for session management btween appliations and assets."
+  },
+  "servers": [
+    {
+      "url": "https://bridge-server.glory-cloud.dev/api/v1",
+      "description": "development cluster in tokyo region"
+    },
+    {
+      "url": "http://localhost:3000",
+      "description": "local machine for debug"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Session"
+    }
+  ],
+  "paths": {
+    "/session-manager/sessions": {
+      "post": {
+        "tags": ["Session"],
+        "summary": "Creates the session",
+        "description": "This API creates the session between the specified asset and emits CreateSession event as a MQTT message",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Session"
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Session"
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequestBody"
+          },
+          "500": {
+            "$ref": "#/components/responses/UnexpectedError"
+          }
+        }
+      }
+    },
+    "/session-manager/sessions/{sessionId}": {
+      "delete": {
+        "tags": ["Session"],
+        "summary": "Deletes the session",
+        "description": "This API deletes the session between the specified asset and emits CloseSession event as a MQTT message",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pathSessionId"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "success"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/UnexpectedError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "pathSessionId": {
+        "name": "sessionId",
+        "schema": {
+          "type": "string"
+        },
+        "in": "path",
+        "description": "session id",
+        "required": true
+      }
+    },
+    "requestBodies": {
+      "Session": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/PostSession"
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "Session": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Session"
+            }
+          }
+        }
+      },
+      "InvalidRequestBody": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "number",
+                  "example": 400
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Invalid Request Body"
+                }
+              }
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "number",
+                  "example": 404
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Not Found"
+                }
+              }
+            }
+          }
+        }
+      },
+      "UnexpectedError": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "number",
+                  "example": 500
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Unexpected Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "PostSession": {
+        "type": "object",
+        "properties": {
+          "typeId": {
+            "type": "string",
+            "example": "CI-10"
+          },
+          "assetId": {
+            "type": "string",
+            "example": "000001"
+          }
+        },
+        "required": ["typeId", "assetId"]
+      },
+      "Session": {
+        "type": "object",
+        "properties": {
+          "typeId": {
+            "type": "string",
+            "example": "CI-10"
+          },
+          "assetId": {
+            "type": "string",
+            "example": "000001"
+          },
+          "sessionId": {
+            "type": "string",
+            "example": "3F2504E0-4F89-11D3-9A0C-0305E82C3301"
+          },
+          "topicPrefix": {
+            "type": "string",
+            "example": "/glory/session/3F2504E0-4F89-11D3-9A0C-0305E82C3301"
+          }
+        },
+        "required": ["typeId", "assetId", "sessionId", "topicPrefix"]
+      }
+    }
+  }
+}

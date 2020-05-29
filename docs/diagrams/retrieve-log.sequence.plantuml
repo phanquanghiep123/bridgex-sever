@@ -1,0 +1,81 @@
+@startuml retrieve-log.sequence.plantuml
+
+
+
+title: retrieve log sequence
+
+participant "Bridge-X BFF" as bff
+participant "Bridge-X server" as bxs
+database Postgres as pg #123456
+participant "Task scheduler" as sch
+participant "Session Manager" as sm
+database ICOS as icos #bbFFbb
+database FTP as ftp #bbFF22
+collections Asset as asset
+
+== post retrieve log task ==
+
+bff -> bxs : POST /tasks
+bxs -> pg  : insert task (taskId & target assets)
+bxs -> sch : schedule task(taskId)
+
+== retrieve log prcess ==
+
+bxs <<- sch : start retrieveLog(taskId)
+activate bxs
+bxs -> pg : get /tasks/{taskId}
+
+loop asset counts : parallel for each
+  bxs -> pg : get asset-status
+  bxs -> sm : POST /sessions
+  sm -> asset : PUB /:typeId/:assetId/action/CreateSession
+  bxs <<-- sm : return session-topic
+
+  bxs -> pg : get asset-protocol
+  bxs -> bxs : create upload-URL for retrieved log file
+
+  bxs -> pg : register file path
+  bxs ->> asset : PUB /:session-topic/command/RetrieveLog
+  deactivate bxs
+  activate asset
+
+  note over asset
+    send message with empty payload to command topic, and ignore empty payload at subscriber
+  end note
+  asset -> asset : clear retain message
+  asset -> asset : retrieve log & archive
+  ftp <- asset : upload a log file
+  bxs <<- asset : PUB /:session-topic/response/RetrieveLog
+  deactivate asset
+
+  activate bxs
+  note over bxs
+    send message with empty payload to command topic, and ignore empty payload at subscriber
+  end note
+  bxs -> bxs : clear retain message
+  bxs -> sm : DELETE /sessions/:sessionId
+  sm -> asset : PUB /:typeId/:assetId/action/CloseSession
+
+
+  note over sm, asset
+    remove following message after agent implemented /:typeId/:assetId/action/CloseSession
+  end note
+  sm -> asset : PUB /:session-topic/command/CloseSession
+
+  alt retrieve log for all assets
+  alt case: upload success
+    bxs -> ftp : get log file by file path
+    bxs -> icos : upload log file (key /asset-logs/~.tar.gz)
+    bxs -> pg : register log file path of icos
+    bxs -> pg : if error occur, Failure retrieveLog(taskId)
+  end
+
+    bxs -> bxs : complete retrieveLog(taskId)
+  end
+end
+
+deactivate bxs
+
+bff -> bxs : GET /tasks
+
+@enduml

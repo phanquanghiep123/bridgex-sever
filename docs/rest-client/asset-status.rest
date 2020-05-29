@@ -1,0 +1,13 @@
+// asset and subassets
+GET http://localhost:3000/types/CI10/assets/100001/status
+
+###
+
+// no sub assets
+GET http://localhost:3000/types/CI10/assets/500005/status
+
+
+###
+
+// no asset
+GET http://localhost:3000/types/CI10/assets/100002/status

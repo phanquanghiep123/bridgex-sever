@@ -1,0 +1,6 @@
+typeId: "system-error"
+errors:
+  - code: "unsupported-asset-type"
+    message: "Unsupported asset-type"
+  - code: "unsupported-error-code"
+    message: "Unsupported error"

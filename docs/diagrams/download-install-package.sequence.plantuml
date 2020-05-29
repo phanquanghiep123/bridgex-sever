@@ -1,0 +1,171 @@
+@startuml download-package.sequence.plantuml
+
+
+title: download package sequence
+
+participant "Bridge-X BFF" as bff
+participant "Bridge-X server" as bxs
+database Postgres as pg #123456
+participant "Task scheduler" as sch
+participant "Session Manager" as sm
+database ICOS as icos #bbFFbb
+database FTP as ftp #bbFF22
+participant "MQTT Broker" as mqtt
+collections Asset as asset
+
+== post package ==
+
+bff -> bxs : POST /packages
+bxs -> pg : create package info (uploading)
+bff <-- bxs : return upload url
+bff -> icos : upload
+
+note over icos
+  uploaded-package.zip
+    - META.yaml
+    - update-package.tar.gz
+end note
+
+bff -> bxs : POST /packages/:packageId/uploadCompletion
+bxs -> pg : update package status (validating)
+
+bxs -> icos : GET /package
+bxs -> bxs : unzip and save into tmp folder
+bxs -> bxs : validate
+bxs -> ftp : upload
+bxs -> bxs : remove tmp folder
+
+note over ftp
+  update-package.tar.gz
+    - Download.xml
+    - RBW100_dxxxxx.bin
+    - etc...
+end note
+
+bxs -> pg : update package status (completed) \n and metadata
+note over pg
+  package info
+    - file name on Object Storage (uploaded-package.zip)
+    - file name on FTP (update-package.tar.gz)
+    - asset type
+    - etc...
+end note
+
+== post download task ==
+
+bff -> bxs : POST /tasks
+bxs -> sch : schedule task(taskId)
+
+== download process ==
+
+bxs <<- sch : start download(taskId)
+activate bxs
+bxs -> pg : get /tasks/{taskId}
+
+loop asset counts : parallel for each
+  bxs -> pg : get asset-status
+  bxs -> sm : POST /sessions
+  sm -> asset : PUB /:typeId/:assetId/action/CreateSession
+  bxs <<-- sm : return session-topic
+
+  bxs -> bxs : create download-URL of package \n(update-package.tar.gz)
+  bxs ->> asset : PUB /:session-topic/command/DownloadPackage(taskId)
+  deactivate bxs
+  activate asset
+
+  ref over mqtt, asset : clear retain message
+  ftp <- asset : download a package \n (update-package.tar.gz)
+  asset -> asset : store package file with taskId
+  bxs <<- asset : PUB /:session-topic/response/DownloadPackage
+  deactivate asset
+
+  activate bxs
+  bxs -> bxs : clear retain message
+  activate bxs
+  bxs ->> mqtt : PUB /:session-topic/response/DownloadPackage(empty)
+  deactivate bxs
+  activate mqtt
+  mqtt ->> mqtt : clear retain message
+  bxs <<- mqtt :
+  deactivate mqtt
+  activate bxs
+  bxs -> bxs : do nothing
+  deactivate bxs
+
+  bxs -> sm : DELETE /sessions/:sessionId
+  sm -> asset : PUB /:typeId/:assetId/action/CloseSession
+
+
+  note over sm, asset
+    remove following message after agent implemented /:typeId/:assetId/action/CloseSession
+  end note
+  sm -> asset : PUB /:session-topic/command/CloseSession
+
+  alt download package for all assets
+    bxs -> bxs : complete download(taskId)
+  end
+    bxs -> pg : get /tasks/{taskId}
+  note over bxs, pg
+    if install task (which is a set of donwload task) is set `immediately`
+  end note
+  bxs -> bxs : start install (taskId)
+end
+
+== install process ==
+
+bxs <<- sch : start install(taskId)
+activate bxs
+bxs -> pg : get /tasks/{taskId}
+
+loop asset counts : parallel for each
+  bxs -> pg : get asset-status
+  note over bxs, pg
+    if download task is complete, start install process
+    if download task is error , install process will be canceled
+    if donwload task is in progress, install process will wait for download task
+  end note
+  bxs -> sm : POST /sessions
+  sm -> asset : PUB /:typeId/:assetId/action/CreateSession
+  bxs <<-- sm : return session-topic
+
+  bxs ->> asset : PUB /:session-topic/command/Install(taskId)
+  deactivate bxs
+  activate asset
+
+  ref over mqtt, asset : clear retain message
+  asset -> asset : install package file
+  bxs <<- asset : PUB /:session-topic/response/Install
+  deactivate asset
+
+  activate bxs
+  bxs -> bxs : clear retain message
+  activate bxs
+  bxs ->> mqtt : PUB /:session-topic/response/Install(empty)
+  deactivate bxs
+  activate mqtt
+  mqtt ->> mqtt : clear retain message
+  bxs <<- mqtt :
+  deactivate mqtt
+  activate bxs
+  bxs -> bxs : do nothing
+  deactivate bxs
+
+  bxs -> sm : DELETE /sessions/:sessionId
+  sm -> asset : PUB /:typeId/:assetId/action/CloseSession
+
+
+  note over sm, asset
+    remove following message after agent implemented /:typeId/:assetId/action/CloseSession
+  end note
+  sm -> asset : PUB /:session-topic/command/CloseSession
+
+  alt install a packagefor all assets
+    bxs -> bxs : complete install(taskId)
+  end
+end
+
+deactivate bxs
+
+bff -> bxs : GET /tasks
+
+@enduml

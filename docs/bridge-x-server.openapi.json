@@ -1,0 +1,2831 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Bridge-X Server",
+    "version": "0.0.0",
+    "description": "This service has been prepared for getting assets info. Examples of info are status, ip address, name and error code."
+  },
+  "servers": [
+    {
+      "url": "https://bridge-server.glory-cloud.dev/api/v1",
+      "description": "development cluster in tokyo region"
+    },
+    {
+      "url": "http://localhost:3000",
+      "description": "local machine for debug"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Asset"
+    },
+    {
+      "name": "Asset Status"
+    },
+    {
+      "name": "Asset List"
+    },
+    {
+      "name": "Task"
+    },
+    {
+      "name": "Task Status"
+    },
+    {
+      "name": "Asset Versions"
+    },
+    {
+      "name": "Package"
+    },
+    {
+      "name": "Package Status"
+    },
+    {
+      "name": "Asset Inventory"
+    },
+    {
+      "name": "Asset Model"
+    },
+    {
+      "name": "Region"
+    },
+    {
+      "name": "Organization"
+    },
+    {
+      "name": "Location"
+    },
+    {
+      "name": "Asset Log URL"
+    },
+    {
+      "name": "Event"
+    }
+  ],
+  "paths": {
+    "/types/{typeId}/assets/{assetId}": {
+      "get": {
+        "tags": ["Asset"],
+        "summary": "get detail information of an asset",
+        "description": "This api gets get all information related to a specific asset",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pathTypeId"
+          },
+          {
+            "$ref": "#/components/parameters/pathAssetId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Asset"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/UnexpectedError"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Asset"],
+        "summary": "update asset note",
+        "description": "This api update note data of an asset",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pathTypeId"
+          },
+          {
+            "$ref": "#/components/parameters/pathAssetId"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/putAssets"
+        },
+        "responses": {
+          "204": {
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequestBody"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/UnexpectedError"
+          }
+        }
+      }
+    },
+    "/types/{typeId}/assets/{assetId}/status": {
+      "get": {
+        "tags": ["Asset Status"],
+        "summary": "get status about an asset",
+        "description": "This api gets status about an asset.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pathTypeId"
+          },
+          {
+            "$ref": "#/components/parameters/pathAssetId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/AssetStatus"
+          },
+          "404": {
+            "description": "return 404 when specified asset in path param doesn't exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "example": 404
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Not Found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/UnexpectedError"
+          }
+        }
+      }
+    },
+    "/bulk/assets/": {
+      "get": {
+        "tags": ["Asset List"],
+        "summary": "get Assets list",
+        "description": "This api gets asset list.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/queryLimit"
+          },
+          {
+            "$ref": "#/components/parameters/queryOffset"
+          },
+          {
+            "$ref": "#/components/parameters/queryTypeId"
+          },
+          {
+            "$ref": "#/components/parameters/queryOrganizationId"
+          },
+          {
+            "$ref": "#/components/parameters/queryLocationId"
+          },
+          {
+            "$ref": "#/components/parameters/queryRegionId"
+          },
+          {
+            "$ref": "#/components/parameters/queryText"
+          },
+          {
+            "$ref": "#/components/parameters/querySortName"
+          },
+          {
+            "$ref": "#/components/parameters/querySort"
+          },
+          {
+            "$ref": "#/components/parameters/queryStatus"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/AssetList"
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequestBody"
+          },
+          "500": {
+            "$ref": "#/components/responses/UnexpectedError"
+          }
+        }
+      }
+    },
+    "/bulk/assets/getMany": {
+      "post": {
+        "tags": ["Asset List"],
+        "summary": "get status list of requested assets",
+        "description": "This api gets status list about assets specified in body. The body has array of typeId and assetId",
+        "parameters": [],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/assets"
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/AssetStatusList"
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequestBody"
+          },
+          "500": {
+            "$ref": "#/components/responses/UnexpectedError"
+          }
+        }
+      }
+    },
+    "/bulk/assets/availability": {
+      "get": {
+        "tags": ["Asset List"],
+        "summary": "get availability list",
+        "description": "This api gets availability list about assets",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/AssetAvailability"
+          },
+          "500": {
+            "$ref": "#/components/responses/UnexpectedError"
+          }
+        }
+      }
+    },
+    "/tasks/{taskId}": {
+      "get": {
+        "tags": ["Task"],
+        "summary": "task detail information",
+        "description": "get task detail information",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pathTaskId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskInfo"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequestPathParams"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorised"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnexpectedError"
+          }
+        }
+      }
+    },
+    "/tasks": {
+      "get": {
+        "tags": ["Task"],
+        "summary": "list all available files of an asset type on the server",
+        "description": "list all available files of an asset type on the server",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/queryLimit"
+          },
+          {
+            "$ref": "#/components/parameters/queryOffset"
+          },
+          {
+            "$ref": "#/components/parameters/queryTaskText"
+          },
+          {
+            "$ref": "#/components/parameters/queryTaskSortName"
+          },
+          {
+            "$ref": "#/components/parameters/querySort"
+          }
+        ],
+        "responses": {
+          "200": {
+            "headers": {
+              "Access-Control-Expose-Headers": {
+                "schema": {
+                  "type": "string",
+                  "default": "X-Total-Count",
+                  "description": "The information related to custom headers"
+                }
+              },
+              "X-Total-Count": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[0-9]+$",
+                  "description": "total number of tasks"
+                }
+              }
+            },
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "description": "The snapshot of all tasks",
+                  "items": {
+                    "$ref": "#/components/schemas/TaskListInfo"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequestPathParams"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorised"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnexpectedError"
+          }
+        }
+      }
+    },
+    "/tasks/logs": {
+      "post": {
+        "tags": ["Task"],
+        "summary": "create new logs tasks",
+        "description": "This api creates new logs tasks by selecting asset",
+        "parameters": [],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/postLogsTasks"
+        },
+        "responses": {
+          "201": {
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequestBody"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorised"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnexpectedError"
+          }
+        }
+      }
+    },
+    "/tasks/deployments": {
+      "post": {
+        "tags": ["Task"],
+        "summary": "create new deployments tasks",
+        "description": "This api creates new deployments tasks by selecting packages and asset",
+        "parameters": [],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/postTasks"
+        },
+        "responses": {
+          "201": {
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequestBody"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorised"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnexpectedError"
+          }
+        }
+      }
+    },
+    "/tasks/reboots": {
+      "post": {
+        "tags": ["Task"],
+        "summary": "create new reboot tasks",
+        "description": "This api creates new reboots tasks by selecting asset",
+        "parameters": [],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/postRebootsTasks"
+        },
+        "responses": {
+          "201": {
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequestBody"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorised"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnexpectedError"
+          }
+        }
+      }
+    },
+    "/tasks/selfTests": {
+      "post": {
+        "tags": ["Task"],
+        "summary": "create new selfTest tasks",
+        "description": "This api creates new selfTests tasks by selecting asset",
+        "parameters": [],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/postRebootsTasks"
+        },
+        "responses": {
+          "201": {
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequestBody"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorised"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnexpectedError"
+          }
+        }
+      }
+    },
+    "/bulk/tasks/status": {
+      "post": {
+        "tags": ["Task Status"],
+        "summary": "get status list of requested task",
+        "description": "This api gets status list about task specified in body. The body has array of taskId",
+        "parameters": [],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/postTasksStatus"
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/TaskStatusList"
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequestBody"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorised"
+          },
+          "500": {
+            "$ref": "#/components/responses/UnexpectedError"
+          }
+        }
+      }
+    },
+    "/types/{typeId}/assets/{assetId}/versions": {
+      "get": {
+        "tags": ["Asset Versions"],
+        "summary": "get software versions of the specified asset",
+        "description": "get software versions of the specified asset. The path params request typeId and assetId about target asset.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pathTypeId"
+          },
+          {
+            "$ref": "#/components/parameters/pathAssetId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/AssetVersions"
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequestPathParams"
+          },
+          "404": {
+            "description": "return 404 when specified asset in path param doesn't exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "example": 404
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Not Found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/UnexpectedError"
+          }
+        }
+      }
+    },
+    "/packages": {
+      "get": {
+        "tags": ["Package"],
+        "description": "This api gets package list.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/queryLimit"
+          },
+          {
+            "$ref": "#/components/parameters/queryOffset"
+          },
+          {
+            "$ref": "#/components/parameters/queryPackageStatus"
+          },
+          {
+            "$ref": "#/components/parameters/queryPackageText"
+          },
+          {
+            "$ref": "#/components/parameters/queryPackageSortName"
+          },
+          {
+            "$ref": "#/components/parameters/querySort"
+          }
+        ],
+        "responses": {
+          "200": {
+            "headers": {
+              "Access-Control-Expose-Headers": {
+                "schema": {
+                  "type": "string",
+                  "default": "X-Total-Count",
+                  "description": "The information related to custom headers"
+                }
+              },
+              "X-Total-Count": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[0-9]+$",
+                  "description": "total number of assets"
+                }
+              }
+            },
+            "$ref": "#/components/responses/Package"
+          },
+          "500": {
+            "$ref": "#/components/responses/UnexpectedError"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Package"],
+        "description": "create new information related to a specific package",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/postPackage"
+        },
+        "responses": {
+          "201": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": ["packageId", "uploadUrl"],
+                  "type": "object",
+                  "properties": {
+                    "packageId": {
+                      "type": "string",
+                      "description": "This ID is unique for each package",
+                      "example": "00000000-0000-0000-0000-000000000000"
+                    },
+                    "uploadUrl": {
+                      "type": "string",
+                      "description": "This is the URL for uploading the package",
+                      "example": "https://127.0.0.1/home/xxx/yyy.zip"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequestBody"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorised"
+          }
+        }
+      }
+    },
+    "/packages/{packageId}/uploadCompletion": {
+      "put": {
+        "tags": ["Package"],
+        "description": "When the upload is complete, this API is executed and the status changes from Uploading to Validating. After validation, the status changes from Validating to Complete or Invalid.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pathPackageId"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "success"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/UnexpectedError"
+          }
+        }
+      }
+    },
+    "/packages/{packageId}/uploadFailure": {
+      "put": {
+        "tags": ["Package"],
+        "description": "When the upload is failure, this API is executed and the status changes from Uploading to Failure.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pathPackageId"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "success"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/UnexpectedError"
+          }
+        }
+      }
+    },
+    "/packages/{packageId}": {
+      "put": {
+        "tags": ["Package"],
+        "description": "This api related information about a packages.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pathPackageId"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/putPackage"
+        },
+        "responses": {
+          "204": {
+            "description": "success"
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequestBody"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/UnexpectedError"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Package"],
+        "description": "This api delete information about a packages.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pathPackageId"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "success"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/UnexpectedError"
+          }
+        }
+      }
+    },
+    "/bulk/packages/status": {
+      "post": {
+        "tags": ["Package Status"],
+        "summary": "get status list of requested packages",
+        "description": "This api gets status list about packages specified in body. The body has array of packageId",
+        "parameters": [],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/postPackagesStatus"
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/PackageStatusList"
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequestBody"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorised"
+          },
+          "500": {
+            "$ref": "#/components/responses/UnexpectedError"
+          }
+        }
+      }
+    },
+    "/types/{typeId}/assets/{assetId}/inventory": {
+      "get": {
+        "tags": ["Asset Inventory"],
+        "summary": "get inventories about an asset",
+        "description": "This api get inventories about an asset",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pathTypeId"
+          },
+          {
+            "$ref": "#/components/parameters/pathAssetId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/AssetInventory"
+          },
+          "404": {
+            "description": "return 404 when specified asset in path param doesn't exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "example": 404
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Not Found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/UnexpectedError"
+          }
+        }
+      }
+    },
+    "/types": {
+      "get": {
+        "tags": ["Asset Model"],
+        "summary": "get asset model list",
+        "description": "This api get asset model list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "success",
+            "headers": {
+              "Access-Control-Expose-Headers": {
+                "description": "The information related to custom headers",
+                "schema": {
+                  "type": "string",
+                  "default": "X-Total-Count"
+                }
+              },
+              "X-Total-Count": {
+                "description": "total number of AssetType",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "description": "an array of AssetType. an empty array will be returned if there are no data.",
+                  "items": {
+                    "$ref": "#/components/schemas/AssetType"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/UnexpectedError"
+          }
+        }
+      }
+    },
+    "/regions": {
+      "get": {
+        "tags": ["Region"],
+        "summary": "get region list",
+        "description": "This api get region list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "success",
+            "headers": {
+              "Access-Control-Expose-Headers": {
+                "description": "The information related to custom headers",
+                "schema": {
+                  "type": "string",
+                  "default": "X-Total-Count"
+                }
+              },
+              "X-Total-Count": {
+                "description": "total number of Region",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "description": "an array of Region. an empty array will be returned if there are no data.",
+                  "items": {
+                    "$ref": "#/components/schemas/Region"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/UnexpectedError"
+          }
+        }
+      }
+    },
+    "/customers": {
+      "get": {
+        "tags": ["Organization"],
+        "summary": "get organization list",
+        "description": "This api get organization list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "success",
+            "headers": {
+              "Access-Control-Expose-Headers": {
+                "description": "The information related to custom headers",
+                "schema": {
+                  "type": "string",
+                  "default": "X-Total-Count"
+                }
+              },
+              "X-Total-Count": {
+                "description": "total number of Customer",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "description": "an array of Customer. an empty array will be returned if there are no data.",
+                  "items": {
+                    "$ref": "#/components/schemas/Customer"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/UnexpectedError"
+          }
+        }
+      }
+    },
+    "/customers/{customerId}/locations": {
+      "get": {
+        "tags": ["Location"],
+        "summary": "get location list",
+        "description": "This api get location list",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pathCustomerId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "headers": {
+              "Access-Control-Expose-Headers": {
+                "description": "The information related to custom headers",
+                "schema": {
+                  "type": "string",
+                  "default": "X-Total-Count"
+                }
+              },
+              "X-Total-Count": {
+                "description": "total number of Location",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "description": "an array of Location. an empty array will be returned if there are no data.",
+                  "items": {
+                    "$ref": "#/components/schemas/Location"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/UnexpectedError"
+          }
+        }
+      }
+    },
+    "/assetLogURL/tasks/{taskId}/types/{typeId}/assets/{assetId}": {
+      "get": {
+        "tags": ["Asset Log URL"],
+        "summary": "This api gets URL of asset log.",
+        "description": "get URL of an asset log associated with specified taskId, typeId and assetId. The taskId must be associated with retrieve log task. Otherwise return Not Found.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pathTaskId"
+          },
+          {
+            "$ref": "#/components/parameters/pathTypeId"
+          },
+          {
+            "$ref": "#/components/parameters/pathAssetId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetLogURL"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "return 404 when specified asset in path param doesn't exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "example": 404
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Not Found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/UnexpectedError"
+          }
+        }
+      }
+    },
+    "/types/{typeId}/assets/{assetId}/events": {
+      "get": {
+        "tags": ["Event"],
+        "summary": "get events of specified asset",
+        "description": "Kinds of event are \"Bridge\" and \"Asset\". The \"Bridge\" includes scheduling a task, executing the task and result of the task. The \"Asset\" includes event from the asset.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pathTypeId"
+          },
+          {
+            "$ref": "#/components/parameters/pathAssetId"
+          },
+          {
+            "$ref": "#/components/parameters/queryLimit"
+          },
+          {
+            "$ref": "#/components/parameters/queryOffset"
+          },
+          {
+            "$ref": "#/components/parameters/queryEventText"
+          },
+          {
+            "$ref": "#/components/parameters/queryEventSource"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Event"
+          },
+          "404": {
+            "description": "return 404 when specified asset in path param doesn't exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number",
+                      "example": 404
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Not Found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/UnexpectedError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "pathTypeId": {
+        "name": "typeId",
+        "schema": {
+          "type": "string"
+        },
+        "in": "path",
+        "description": "asset type id",
+        "required": true
+      },
+      "pathAssetId": {
+        "name": "assetId",
+        "schema": {
+          "type": "string"
+        },
+        "in": "path",
+        "description": "asset id",
+        "required": true
+      },
+      "pathPackageId": {
+        "name": "packageId",
+        "schema": {
+          "type": "string"
+        },
+        "in": "path",
+        "description": "package id",
+        "required": true
+      },
+      "pathCustomerId": {
+        "name": "customerId",
+        "schema": {
+          "type": "string"
+        },
+        "in": "path",
+        "description": "customer id",
+        "required": true
+      },
+      "queryLimit": {
+        "name": "limit",
+        "schema": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 20
+        },
+        "in": "query",
+        "description": "The number of items to return"
+      },
+      "queryOffset": {
+        "name": "offset",
+        "schema": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0
+        },
+        "in": "query",
+        "description": "The number of items to skip before starting to collect the result set"
+      },
+      "querySortName": {
+        "name": "sortName",
+        "schema": {
+          "type": "string",
+          "description": "possible sorting items.",
+          "default": "installationDate",
+          "enum": ["assetId", "typeId", "customerId", "locationId", "regionId", "alias", "ipAddress", "status", "installationDate"]
+        },
+        "in": "query",
+        "description": "Item to sort."
+      },
+      "queryPackageSortName": {
+        "name": "sortName",
+        "schema": {
+          "type": "string",
+          "description": "possible sorting items.",
+          "default": "date",
+          "enum": ["name", "status", "summary", "date"]
+        },
+        "in": "query",
+        "description": "Item to sort."
+      },
+      "queryTaskSortName": {
+        "name": "sortName",
+        "schema": {
+          "type": "string",
+          "description": "possible sorting items.",
+          "default": "updateDate",
+          "enum": ["status", "name", "taskType", "updateDate"]
+        },
+        "in": "query",
+        "description": "Item to sort."
+      },
+      "querySort": {
+        "name": "sort",
+        "schema": {
+          "type": "string",
+          "description": "possible sorting order",
+          "pattern": "^asc$|^desc$",
+          "default": "desc",
+          "enum": ["asc", "desc"]
+        },
+        "in": "query",
+        "description": "The order of items"
+      },
+      "queryAssetId": {
+        "name": "assetId",
+        "schema": {
+          "type": "string"
+        },
+        "in": "query",
+        "description": "asset id"
+      },
+      "queryTypeId": {
+        "name": "typeId",
+        "schema": {
+          "type": "string"
+        },
+        "in": "query",
+        "description": "The array string types separated by ',' "
+      },
+      "queryOrganizationId": {
+        "name": "organization",
+        "schema": {
+          "type": "string"
+        },
+        "in": "query",
+        "description": "asset organization"
+      },
+      "queryLocationId": {
+        "name": "location",
+        "schema": {
+          "type": "string"
+        },
+        "in": "query",
+        "description": "asset location "
+      },
+      "queryRegionId": {
+        "name": "region",
+        "schema": {
+          "type": "string"
+        },
+        "in": "query",
+        "description": "asset region "
+      },
+      "queryText": {
+        "name": "text",
+        "schema": {
+          "type": "string"
+        },
+        "in": "query",
+        "description": "free text to seach fields (assetId, typeId, customerId, locationId, regionId, description, alias, ipAddress, note, subAssetId, subAssetTypeId, subpartsName, subpartsVersion) but not response (subAssetId, subAssetTypeId, subpartsName, subpartsVersion). able to use white space for AND search"
+      },
+      "queryPackageText": {
+        "name": "text",
+        "schema": {
+          "type": "string"
+        },
+        "in": "query",
+        "description": "free text to seach fields (name, status, uploadBy, summary, description, model, elementsName, elementsVersion, memo). able to use white space for AND search"
+      },
+      "queryTaskText": {
+        "name": "text",
+        "schema": {
+          "type": "string"
+        },
+        "in": "query",
+        "description": "free text to seach fields (status, name, taskType, createdBy, logType, memo)"
+      },
+      "queryEventText": {
+        "name": "text",
+        "schema": {
+          "type": "string"
+        },
+        "in": "query",
+        "description": "free text to seach fields (subject, importrance,). able to use white space for AND search"
+      },
+      "pathTaskId": {
+        "name": "taskId",
+        "schema": {
+          "type": "string"
+        },
+        "in": "path",
+        "required": true,
+        "description": "task id"
+      },
+      "queryTaskId": {
+        "name": "taskId",
+        "schema": {
+          "type": "string"
+        },
+        "in": "query",
+        "required": true,
+        "description": "task id"
+      },
+      "queryStatus": {
+        "name": "status",
+        "schema": {
+          "type": "string",
+          "enum": ["Missing", "Good", "Error"]
+        },
+        "in": "query",
+        "description": "The array string statuses separated by ',' "
+      },
+      "queryPackageStatus": {
+        "name": "status",
+        "schema": {
+          "$ref": "#/components/schemas/EPackageStatus"
+        },
+        "in": "query"
+      },
+      "queryEventSource": {
+        "name": "eventSource",
+        "description": "enumeration used to filter events by kinds of event. If this is empty string, this api will return all event kinds",
+        "schema": {
+          "$ref": "#/components/schemas/EEventSource"
+        },
+        "in": "query"
+      }
+    },
+    "requestBodies": {
+      "assets": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "typeId": {
+                    "type": "string",
+                    "example": "UW-F"
+                  },
+                  "assetId": {
+                    "type": "string",
+                    "example": "000001"
+                  }
+                },
+                "required": ["typeId", "assetId"]
+              }
+            }
+          }
+        }
+      },
+      "putAssets": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "note": {
+                  "type": "string",
+                  "example": "Teller No.1"
+                }
+              }
+            }
+          }
+        }
+      },
+      "postPackage": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "description": "name of the package",
+                  "type": "string",
+                  "example": "CI-100_1.22"
+                }
+              },
+              "required": ["name"]
+            }
+          }
+        }
+      },
+      "putPackage": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "memo": {
+                  "type": "string",
+                  "example": "Package for Glory Bank's CI-100"
+                }
+              },
+              "required": ["memo"]
+            }
+          }
+        }
+      },
+      "postPackagesStatus": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "packageId": {
+                    "description": "package id",
+                    "type": "string",
+                    "example": "00000000-0000-0000-0000-000000000000"
+                  }
+                },
+                "required": ["packageId"]
+              }
+            }
+          }
+        }
+      },
+      "postTasks": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "New task"
+                },
+                "packages": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "example": "00000-0000-0000-000000000"
+                  },
+                  "maxItems": 1
+                },
+                "assets": {
+                  "type": "array",
+                  "description": "This property has a array structure about this Asset",
+                  "items": {
+                    "$ref": "#/components/schemas/AssetIdentification"
+                  }
+                }
+              },
+              "required": ["name"]
+            }
+          }
+        }
+      },
+      "postRebootsTasks": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "memo": {
+                  "type": "string",
+                  "example": "this is group of money changers"
+                },
+                "assets": {
+                  "type": "array",
+                  "description": "This property has a array structure about this Asset",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "typeId": {
+                        "type": "string",
+                        "example": "RBW-100"
+                      },
+                      "assetId": {
+                        "type": "string",
+                        "example": "000002"
+                      }
+                    },
+                    "required": ["typeId", "assetId"]
+                  }
+                }
+              },
+              "required": ["assets"]
+            }
+          }
+        }
+      },
+      "postLogsTasks": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "logType": {
+                  "type": "string",
+                  "example": "Business",
+                  "enum": ["Business", "Trace"]
+                },
+                "memo": {
+                  "type": "string",
+                  "example": "group of money changers"
+                },
+                "assets": {
+                  "type": "array",
+                  "description": "This property has a array structure about this Asset",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "typeId": {
+                        "type": "string",
+                        "example": "RBW-100"
+                      },
+                      "assetId": {
+                        "type": "string",
+                        "example": "000002"
+                      }
+                    },
+                    "required": ["typeId", "assetId"]
+                  }
+                }
+              },
+              "required": ["logType", "assets"]
+            }
+          }
+        }
+      },
+      "postTasksStatus": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "taskId": {
+                    "description": "task id",
+                    "type": "string",
+                    "example": "00000000-0000-0000-0000-000000000000"
+                  }
+                },
+                "required": ["taskId"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "Asset": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/AssetInfo"
+            }
+          }
+        }
+      },
+      "AssetStatus": {
+        "description": "return status of an asset or a composite asset. In case that the specified asset is an asset or composite asset hasn't had sub asset, subAssets is empty array.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/AssetStatus"
+            }
+          }
+        }
+      },
+      "AssetStatusList": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/AssetStatus"
+              }
+            }
+          }
+        }
+      },
+      "AssetList": {
+        "description": "",
+        "headers": {
+          "Access-Control-Expose-Headers": {
+            "description": "The information related to custom headers",
+            "schema": {
+              "type": "string",
+              "default": "X-Total-Count"
+            }
+          },
+          "X-Total-Count": {
+            "description": "the total number of assets",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/AssetInfo"
+              }
+            }
+          }
+        }
+      },
+      "Package": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Package"
+              }
+            }
+          }
+        }
+      },
+      "PackageStatusList": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/PackageStatus"
+              }
+            }
+          }
+        }
+      },
+      "TaskStatusList": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/TaskStatusList"
+              }
+            }
+          }
+        }
+      },
+      "AssetVersions": {
+        "description": "return version of specified asset. when the asset exists and version info is not in system, versions is empty array.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/AssetVersions"
+              }
+            }
+          }
+        }
+      },
+      "AssetInventory": {
+        "description": "return inventory of specified asset. when the asset exists and inventory info is not in system, subAssets is empty array.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "typeId": {
+                  "type": "string",
+                  "example": "CI-10"
+                },
+                "assetId": {
+                  "type": "string",
+                  "example": "000002"
+                },
+                "subAssets": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Inventory"
+                  }
+                }
+              },
+              "required": ["typeId", "assetId"]
+            }
+          }
+        }
+      },
+      "Event": {
+        "description": "return event list of specified asset. If the asset exists and doesn't have event, response is empty array.",
+        "headers": {
+          "Access-Control-Expose-Headers": {
+            "description": "The information related to custom headers",
+            "schema": {
+              "type": "string",
+              "default": "X-Total-Count"
+            }
+          },
+          "X-Total-Count": {
+            "description": "the total number of assets",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Event"
+              }
+            }
+          }
+        }
+      },
+      "InvalidRequestBody": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "number",
+                  "example": 400
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Invalid Request Body"
+                }
+              }
+            }
+          }
+        }
+      },
+      "InvalidRequestPathParams": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "number",
+                  "example": 400
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Invalid Request Path Params"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Unauthorised": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "number",
+                  "example": 401
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Unauthorised"
+                }
+              }
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "number",
+                  "example": 404
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Not Found"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ConflictError": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "number",
+                  "example": 409
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Conflict"
+                }
+              }
+            }
+          }
+        }
+      },
+      "UnexpectedError": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "number",
+                  "example": 500
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Unexpected Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AssetAvailability": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/AssetAvailability"
+              }
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "AssetStatus": {
+        "type": "object",
+        "properties": {
+          "typeId": {
+            "type": "string",
+            "example": "CI-10"
+          },
+          "assetId": {
+            "type": "string",
+            "example": "000001"
+          },
+          "status": {
+            "$ref": "#/components/schemas/EStatus"
+          },
+          "errorCode": {
+            "type": "string",
+            "example": "E0001"
+          },
+          "errorMessage": {
+            "type": "string",
+            "example": "Something happened in this asset"
+          },
+          "subAssets": {
+            "type": "array",
+            "description": "This property has sub asset infomation. when parent asset doesn't have sub asset, this is empty array",
+            "items": {
+              "$ref": "#/components/schemas/SubAssetStatus"
+            }
+          }
+        },
+        "required": ["typeId", "assetId", "status", "subAssets"]
+      },
+      "SubAssetStatus": {
+        "type": "object",
+        "properties": {
+          "typeId": {
+            "type": "string",
+            "example": "RBW-100"
+          },
+          "assetId": {
+            "type": "string",
+            "example": "000002"
+          },
+          "status": {
+            "$ref": "#/components/schemas/EStatus"
+          },
+          "errorCode": {
+            "type": "string",
+            "example": "3B27"
+          },
+          "errorMessage": {
+            "type": "string",
+            "example": "Sensor error (UV sensor)"
+          }
+        },
+        "required": ["typeId", "assetId", "status"]
+      },
+      "AssetInfo": {
+        "type": "object",
+        "properties": {
+          "typeId": {
+            "type": "string",
+            "example": "CI-10"
+          },
+          "assetId": {
+            "type": "string",
+            "example": "000001"
+          },
+          "status": {
+            "$ref": "#/components/schemas/EStatus"
+          },
+          "ipAddress": {
+            "type": "string",
+            "example": "192.168.0.1"
+          },
+          "note": {
+            "type": "string",
+            "example": "something like a note"
+          },
+          "customerId": {
+            "type": "string",
+            "example": "Glory Global Solution"
+          },
+          "locationId": {
+            "type": "string",
+            "example": "Himeji HQ"
+          },
+          "regionId": {
+            "type": "string",
+            "example": "East Asia"
+          },
+          "description": {
+            "type": "string",
+            "example": "something like a description"
+          },
+          "alias": {
+            "type": "string",
+            "example": "alias of asset"
+          },
+          "installationDate": {
+            "type": "string",
+            "description": "The timestamp when the asset was installed. This is expressed by ISO 8601 format (YYYY-MM-DDThh:mm:ss[.SSS]+00:00)",
+            "format": "date-time",
+            "example": "2018-10-14T05:36:56.000Z"
+          }
+        },
+        "required": ["typeId", "assetId", "status"]
+      },
+      "TaskAssetInfo": {
+        "type": "object",
+        "properties": {
+          "typeId": {
+            "type": "string",
+            "example": "CI-10"
+          },
+          "assetId": {
+            "type": "string",
+            "example": "000001"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ETaskAssetStatus"
+          },
+          "customerId": {
+            "type": "string",
+            "example": "Glory Global Solution"
+          },
+          "locationId": {
+            "type": "string",
+            "example": "Himeji HQ"
+          },
+          "regionId": {
+            "type": "string",
+            "example": "East Asia"
+          },
+          "alias": {
+            "type": "string",
+            "example": "alias of asset"
+          },
+          "startedAt": {
+            "type": "string",
+            "example": "2018-10-14T05:36:56.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2018-10-15T05:32:56.000Z"
+          }
+        },
+        "required": ["typeId", "assetId", "status", "customerId", "locationId", "updatedAt"]
+      },
+      "TaskPackageInfo": {
+        "type": "object",
+        "description": "description of the file",
+        "properties": {
+          "packageId": {
+            "description": "package id",
+            "type": "string",
+            "example": "00001"
+          },
+          "name": {
+            "description": "name of the package",
+            "type": "string",
+            "example": "CI-100_1.22"
+          },
+          "summary": {
+            "description": "summary of the file",
+            "type": "string",
+            "example": "Upgrade to 1.22 for CI-100"
+          },
+          "date": {
+            "description": "upload date of the package file",
+            "type": "string",
+            "format": "date-time",
+            "example": "2019-2-14T14:36:56+09:00"
+          }
+        },
+        "required": ["id", "name"]
+      },
+      "LogTaskAssetsInfo": {
+        "type": "object",
+        "properties": {
+          "typeId": {
+            "type": "string",
+            "example": "CI-10"
+          },
+          "assetId": {
+            "type": "string",
+            "example": "000001"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ETaskAssetStatus"
+          },
+          "customerId": {
+            "type": "string",
+            "example": "Glory Global Solution"
+          },
+          "locationId": {
+            "type": "string",
+            "example": "Himeji HQ"
+          },
+          "regionId": {
+            "type": "string",
+            "example": "East Asia"
+          },
+          "alias": {
+            "type": "string",
+            "example": "alias of asset"
+          },
+          "startedAt": {
+            "type": "string",
+            "example": "2018-10-14T05:36:56.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2018-10-15T05:32:56.000Z"
+          }
+        },
+        "required": ["typeId", "assetId", "status", "customerId", "locationId", "updatedAt"]
+      },
+      "rebootTaskAssetsInfo": {
+        "type": "object",
+        "properties": {
+          "typeId": {
+            "type": "string",
+            "example": "CI-10"
+          },
+          "assetId": {
+            "type": "string",
+            "example": "000001"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ETaskAssetStatus"
+          },
+          "customerId": {
+            "type": "string",
+            "example": "Glory Global Solution"
+          },
+          "locationId": {
+            "type": "string",
+            "example": "Himeji HQ"
+          },
+          "regionId": {
+            "type": "string",
+            "example": "East Asia"
+          },
+          "alias": {
+            "type": "string",
+            "example": "alias of asset"
+          },
+          "startedAt": {
+            "type": "string",
+            "example": "2018-10-14T05:36:56.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2018-10-15T05:32:56.000Z"
+          }
+        },
+        "required": ["typeId", "assetId", "status", "customerId", "locationId", "updatedAt"]
+      },
+      "selfTestTaskAssetsInfo": {
+        "type": "object",
+        "properties": {
+          "typeId": {
+            "type": "string",
+            "example": "CI-10"
+          },
+          "assetId": {
+            "type": "string",
+            "example": "000001"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ETaskAssetStatus"
+          },
+          "customerId": {
+            "type": "string",
+            "example": "Glory Global Solution"
+          },
+          "locationId": {
+            "type": "string",
+            "example": "Himeji HQ"
+          },
+          "regionId": {
+            "type": "string",
+            "example": "East Asia"
+          },
+          "alias": {
+            "type": "string",
+            "example": "alias of asset"
+          },
+          "startedAt": {
+            "type": "string",
+            "example": "2018-10-14T05:36:56.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2018-10-15T05:32:56.000Z"
+          }
+        },
+        "required": ["typeId", "assetId", "status", "customerId", "locationId", "updatedAt"]
+      },
+      "RetrieveLogs": {
+        "type": "object",
+        "properties": {
+          "typeId": {
+            "type": "string",
+            "example": "CI-10"
+          },
+          "assetId": {
+            "type": "string",
+            "example": "000001"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["Succeed", "Error"]
+          },
+          "errorCode": {
+            "type": "string",
+            "example": "1001"
+          },
+          "errorMessage": {
+            "type": "string",
+            "example": "Upload Error"
+          },
+          "filePath": {
+            "type": "string",
+            "example": "ftp://ftp.glory-cloud.dev:21/{0416fdd6-51be-5cc6-2c12-5a653ab00001}"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2018-10-14T05:36:56.000Z"
+          }
+        },
+        "required": ["typeId", "assetId", "filePath"]
+      },
+      "AssetLogURL": {
+        "description": "URL of an asset log associated with taskId, typeId and assetId specified in query string",
+        "type": "object",
+        "properties": {
+          "assetLogURL": {
+            "type": "string"
+          }
+        },
+        "required": ["assetLogURL"]
+      },
+      "Action": {
+        "type": "object",
+        "description": "an action is composed of a groupId and a commandId. An action is sent to an asset",
+        "properties": {
+          "groupId": {
+            "description": "the group id of the command",
+            "type": "string"
+          },
+          "commandId": {
+            "description": "the id of the command",
+            "type": "string"
+          },
+          "parameters": {
+            "type": "object",
+            "format": "json",
+            "description": "the parameters need by the action",
+            "example": {
+              "fileName": "euro.zip"
+            }
+          }
+        }
+      },
+      "Package": {
+        "type": "object",
+        "description": "description of the file",
+        "properties": {
+          "packageId": {
+            "description": "id of the file",
+            "type": "string",
+            "example": "00000000-0000-0000-0000-000000000000"
+          },
+          "name": {
+            "description": "name of the package",
+            "type": "string",
+            "example": "CI-100_1.22"
+          },
+          "status": {
+            "$ref": "#/components/schemas/EPackageStatus"
+          },
+          "summary": {
+            "description": "summary of the file",
+            "type": "string",
+            "example": "Upgrade to 1.22 for CI-100"
+          },
+          "date": {
+            "description": "upload date of the package file",
+            "type": "string",
+            "format": "date-time",
+            "example": "2019-2-14T14:36:56+09:00"
+          },
+          "description": {
+            "description": "description of the file",
+            "type": "string",
+            "example": "This package upgrades version 1.21 for CI-100"
+          },
+          "uploadBy": {
+            "description": "file uploaded by",
+            "type": "string",
+            "example": "Thomas"
+          },
+          "model": {
+            "description": "model name",
+            "type": "string",
+            "example": "CI-100"
+          },
+          "memo": {
+            "description": "memo",
+            "type": "string",
+            "example": "Package for Glory Bank's CI-100"
+          },
+          "elements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PackageElement"
+            }
+          }
+        }
+      },
+      "PackageElement": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "The name of the element",
+            "type": "string",
+            "example": "bridgeFirmware"
+          },
+          "version": {
+            "description": "The version of the element",
+            "type": "string",
+            "example": "PRS_03.05.16.00"
+          }
+        }
+      },
+      "PackageStatus": {
+        "type": "object",
+        "properties": {
+          "packageId": {
+            "description": "package id",
+            "type": "string",
+            "example": "00000000-0000-0000-0000-000000000000"
+          },
+          "status": {
+            "$ref": "#/components/schemas/EPackageStatus"
+          }
+        },
+        "required": ["packageId", "status"]
+      },
+      "Asset": {
+        "type": "object",
+        "description": "Identify univocally an asset",
+        "properties": {
+          "typeId": {
+            "type": "string",
+            "description": "asset type id",
+            "example": "CI100"
+          },
+          "assetId": {
+            "type": "string",
+            "description": "asset id",
+            "example": "123456"
+          }
+        }
+      },
+      "Firmware": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "The name of the firmware",
+            "type": "string",
+            "example": "bridgeFirmware"
+          },
+          "version": {
+            "description": "The version of the firmware",
+            "type": "string",
+            "example": "PRS_03.05.16.00"
+          }
+        }
+      },
+      "AssetVersions": {
+        "description": "The name and the version are about software information of the specified asset's composite devices.",
+        "type": "object",
+        "properties": {
+          "typeId": {
+            "type": "string",
+            "description": "asset type id",
+            "example": "CI-100"
+          },
+          "assetId": {
+            "type": "string",
+            "description": "asset id",
+            "example": "123456"
+          },
+          "versions": {
+            "type": "array",
+            "description": "This property has a array structure about this AssetVersions",
+            "items": {
+              "$ref": "#/components/schemas/Firmware"
+            }
+          }
+        },
+        "example": {
+          "typeId": "CI-100",
+          "assetId": "123456",
+          "versions": [
+            {
+              "name": "CV_AP",
+              "version": "SC12Z"
+            },
+            {
+              "name": "CV_COUNTRY",
+              "version": "02000000-02000000"
+            },
+            {
+              "name": "MAIN_AP",
+              "version": "C"
+            },
+            {
+              "name": "SPEC_INFO",
+              "version": "00-000000"
+            }
+          ]
+        },
+        "required": ["typeId", "assetId"]
+      },
+      "Event": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string",
+            "description": "description of event",
+            "example": "Create Task ( Download : ${packageName} )"
+          },
+          "importance": {
+            "type": "string",
+            "description": "information is just notification. warning expresses occuring unexpected something. critical expresses occuring serious problem.",
+            "example": "information",
+            "enum": ["information", "warning", "crtical"]
+          },
+          "eventSource": {
+            "type": "string",
+            "description": "express where event occured",
+            "example": "Bridge",
+            "enum": ["Bridge", "Asset"]
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "express when event occured",
+            "example": "2019-2-14T14:36:56+09:00"
+          }
+        },
+        "required": ["subject", "importance", "eventSource", "date"]
+      },
+      "EStatus": {
+        "description": "This is a status about how the asset works.Possible values are 'Missing','Good' and 'Error'. 'Missing' represents this asset is not connecting to mqtt broker. 'Good' represents this asset is connecting mqtt broker and processing normally. 'Error'represents this asset is connecting to mqtt broker but not processing normally.",
+        "type": "string",
+        "enum": ["Missing", "Good", "Error"]
+      },
+      "EPackageStatus": {
+        "description": "This is a status about how the package works.",
+        "type": "string",
+        "enum": ["Uploading", "Validating", "Complete", "Invalid", "Failure"]
+      },
+      "ETaskAssetStatus": {
+        "description": "This is a status about how the task works.",
+        "type": "string",
+        "enum": ["Scheduled", "InProgress", "Complete", "ConnectionError", "DeviceError", "SystemError"]
+      },
+      "EEventSource": {
+        "description": "This is a source of event",
+        "type": "string",
+        "enum": ["Bridge", "Asset"]
+      },
+      "TaskType": {
+        "description": " the task work type",
+        "type": "string",
+        "enum": ["DownloadPackage", "Install", "RetrieveLog", "Reboot", "Reset", "SelfTest"]
+      },
+      "TaskStatus": {
+        "description": "status of the task work ",
+        "type": "string",
+        "enum": ["Scheduled", "InProgress", "Complete", "Failure"]
+      },
+      "Task": {
+        "type": "object",
+        "description": "A task snapshot",
+        "properties": {
+          "id": {
+            "description": "the task identifier",
+            "type": "string"
+          },
+          "name": {
+            "description": "the task name",
+            "type": "string"
+          },
+          "taskType": {
+            "$ref": "#/components/schemas/TaskType"
+          },
+          "status": {
+            "$ref": "#/components/schemas/TaskStatus"
+          },
+          "startAt": {
+            "description": "the initial date-time when the task is scheduled. if not provided, Now is used",
+            "type": "string",
+            "example": "2019-2-14T14:36:56+09:00"
+          },
+          "createdBy": {
+            "description": "the task created by (Person name)",
+            "type": "string"
+          },
+          "modifiedAt": {
+            "description": "the task modifiedAt",
+            "type": "string",
+            "format": "date-time",
+            "example": "2019-2-14T14:36:56+09:00"
+          }
+        },
+        "required": ["id", "name", "taskType", "status"]
+      },
+      "TaskInfo": {
+        "type": "object",
+        "description": "A task snapshot",
+        "properties": {
+          "id": {
+            "description": "the task identifier",
+            "type": "string"
+          },
+          "name": {
+            "description": "the task name. when taskType is RetrieveLog,return [LogType memo]",
+            "type": "string"
+          },
+          "taskType": {
+            "$ref": "#/components/schemas/TaskType"
+          },
+          "status": {
+            "$ref": "#/components/schemas/TaskStatus"
+          },
+          "createdBy": {
+            "description": "the task created by (Person name)",
+            "type": "string"
+          },
+          "updatedAt": {
+            "description": "the task updatedAt",
+            "type": "string",
+            "format": "date-time",
+            "example": "2019-2-14T14:36:56+09:00"
+          },
+          "downloadPackageTaskAssets": {
+            "type": "array",
+            "description": "this is responded about DownloadPackage",
+            "items": {
+              "$ref": "#/components/schemas/TaskAssetInfo"
+            }
+          },
+          "installTaskAssets": {
+            "type": "array",
+            "description": "this is responded about Install",
+            "items": {
+              "$ref": "#/components/schemas/TaskAssetInfo"
+            }
+          },
+          "deploymentTaskPackages": {
+            "$ref": "#/components/schemas/TaskPackageInfo"
+          }
+        },
+        "required": ["id", "name", "taskType", "status"]
+      },
+      "TaskListInfo": {
+        "type": "object",
+        "description": "A task snapshot",
+        "properties": {
+          "id": {
+            "description": "the task identifier",
+            "type": "string"
+          },
+          "name": {
+            "description": "the task name. when taskType is RetrieveLog,return [LogType memo]",
+            "type": "string"
+          },
+          "taskType": {
+            "$ref": "#/components/schemas/TaskType"
+          },
+          "status": {
+            "$ref": "#/components/schemas/TaskStatus"
+          },
+          "relatedTaskId": {
+            "description": "task id which this task relate",
+            "type": "string",
+            "example": "00000000-0000-0000-0000-000000000000"
+          },
+          "relatedTaskType": {
+            "description": "task type which this task relate",
+            "type": "string",
+            "enum": ["DownloadPackage", "Install"]
+          },
+          "createdBy": {
+            "description": "the task created by (Person name)",
+            "type": "string"
+          },
+          "updatedAt": {
+            "description": "the task updatedAt",
+            "type": "string",
+            "format": "date-time",
+            "example": "2019-2-14T14:36:56+09:00"
+          },
+          "downloadPackageTaskAssets": {
+            "type": "array",
+            "description": "this is responded about DownloadPackage",
+            "items": {
+              "$ref": "#/components/schemas/TaskAssetInfo"
+            }
+          },
+          "installTaskAssets": {
+            "type": "array",
+            "description": "this is responded about Install",
+            "items": {
+              "$ref": "#/components/schemas/TaskAssetInfo"
+            }
+          },
+          "deploymentTaskPackages": {
+            "$ref": "#/components/schemas/TaskPackageInfo"
+          },
+          "logTask": {
+            "type": "object",
+            "properties": {
+              "logType": {
+                "type": "string",
+                "example": "Business",
+                "enum": ["Business", "Trace"]
+              },
+              "memo": {
+                "type": "string",
+                "example": "MEMO-0000000000-0000000001"
+              }
+            },
+            "required": ["logType"]
+          },
+          "logTaskAssets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LogTaskAssetsInfo"
+            }
+          },
+          "retrieveLogs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RetrieveLogs"
+            }
+          },
+          "rebootTask": {
+            "type": "object",
+            "properties": {
+              "memo": {
+                "type": "string",
+                "example": "MEMO-0000000000-0000000001"
+              }
+            }
+          },
+          "rebootTaskAssets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/rebootTaskAssetsInfo"
+            }
+          },
+          "selfTestTask": {
+            "type": "object",
+            "properties": {
+              "memo": {
+                "type": "string",
+                "example": "MEMO-0000000000-0000000001"
+              }
+            }
+          },
+          "selfTestTaskAssets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/selfTestTaskAssetsInfo"
+            }
+          }
+        },
+        "required": ["id", "name", "taskType", "status"]
+      },
+      "TaskStatusList": {
+        "type": "object",
+        "properties": {
+          "taskId": {
+            "description": "task id",
+            "type": "string",
+            "example": "00000000-0000-0000-0000-000000000000"
+          },
+          "taskType": {
+            "description": " the task work type",
+            "type": "string",
+            "enum": ["Deployment", "RetrieveLog", "Reboot", "SelfTest", "Reset"]
+          },
+          "status": {
+            "description": "status of the task work ",
+            "type": "string",
+            "enum": ["Scheduled", "InProgress", "Complete", "Failure"]
+          },
+          "taskAssets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskAssetsStatus"
+            }
+          }
+        },
+        "required": ["taskId", "taskType", "status", "taskAssets"]
+      },
+      "TaskAssetsStatus": {
+        "type": "object",
+        "properties": {
+          "typeId": {
+            "type": "string",
+            "example": "CI-10"
+          },
+          "assetId": {
+            "type": "string",
+            "example": "000001"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ETaskAssetStatus"
+          }
+        },
+        "required": ["typeId", "assetId", "status"]
+      },
+      "AssetIdentification": {
+        "type": "object",
+        "properties": {
+          "typeId": {
+            "type": "string",
+            "example": "RBW-100"
+          },
+          "assetId": {
+            "type": "string",
+            "example": "000002"
+          }
+        }
+      },
+      "Inventory": {
+        "type": "object",
+        "description": "this is a inventory information for the specified asset",
+        "properties": {
+          "typeId": {
+            "type": "string",
+            "example": "RBW100"
+          },
+          "assetId": {
+            "type": "string",
+            "example": "000002"
+          },
+          "cashUnits": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CashUnits"
+            }
+          }
+        },
+        "required": ["typeId", "assetId"]
+      },
+      "CashUnits": {
+        "type": "object",
+        "description": "This property has a array structure about this asset's cash units",
+        "properties": {
+          "unit": {
+            "description": "name given to the cassette ",
+            "type": "string",
+            "example": "casset 1"
+          },
+          "status": {
+            "description": "status of the cassette ",
+            "type": "string",
+            "enum": ["Full", "NearFull", "Exist", "NearEmpty", "Empty"]
+          },
+          "capacity": {
+            "description": "capacity of the cassette ",
+            "type": "number",
+            "example": 600
+          },
+          "denominations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Denominations"
+            }
+          }
+        },
+        "required": ["unit", "status", "capacity"]
+      },
+      "Denominations": {
+        "type": "object",
+        "description": "This property has a array structure about information on the currency of the cassette",
+        "properties": {
+          "currencyCode": {
+            "description": "currency type ",
+            "type": "string",
+            "example": "EUR"
+          },
+          "faceValue": {
+            "description": "face value of the currency ",
+            "type": "string",
+            "example": "20"
+          },
+          "count": {
+            "type": "number",
+            "example": 0
+          }
+        },
+        "required": ["currencyCode", "faceValue", "count"]
+      },
+      "AssetType": {
+        "type": "object",
+        "properties": {
+          "typeId": {
+            "type": "string",
+            "description": "asset type id",
+            "example": "CI100"
+          },
+          "typeKind": {
+            "type": "integer",
+            "description": "asset type kind (0:Asset/SubAsset, 1:Asset, 2:SubAsset)",
+            "example": 1
+          },
+          "classId": {
+            "type": "string",
+            "description": "class id",
+            "example": "composite",
+            "enum": ["device", "gateway", "composite"]
+          },
+          "extras": {
+            "type": "object",
+            "properties": {
+              "deviceClass": {
+                "type": "string",
+                "description": "device class. If classId is device, this information is required",
+                "example": "recycler"
+              },
+              "manufacturer": {
+                "type": "string",
+                "description": "The manufacturer of the asset",
+                "example": "Glory Global Solution"
+              },
+              "productNumber": {
+                "type": "string",
+                "description": "product number of asset",
+                "example": "000001"
+              }
+            },
+            "description": "Extra info according to classId"
+          },
+          "description": {
+            "type": "string",
+            "description": "describes this information",
+            "example": "something like a description"
+          }
+        },
+        "required": ["typeId", "typeKind", "classId"]
+      },
+      "Region": {
+        "type": "object",
+        "properties": {
+          "regionId": {
+            "type": "string",
+            "example": "East Asia"
+          }
+        },
+        "required": ["regionId"]
+      },
+      "Customer": {
+        "type": "object",
+        "properties": {
+          "customerId": {
+            "type": "string",
+            "description": "customer id",
+            "example": "Glory Global Solution"
+          }
+        },
+        "required": ["customerId"]
+      },
+      "Location": {
+        "type": "object",
+        "properties": {
+          "customerId": {
+            "type": "string",
+            "description": "customer id",
+            "example": "Glory Global Solution"
+          },
+          "locationId": {
+            "type": "string",
+            "description": "location id",
+            "example": "Himeji HQ"
+          }
+        },
+        "required": ["customerId", "locationId"]
+      },
+      "AssetAvailability": {
+        "type": "object",
+        "description": "Availability an asset",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/EStatus"
+          },
+          "count": {
+            "type": "number",
+            "example": 123
+          }
+        },
+        "required": ["status", "count"]
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

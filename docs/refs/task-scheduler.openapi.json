@@ -1,0 +1,167 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Bridge-X - Task Scheduler (draft)",
+    "version": "0.0.1",
+    "description": "This service is responsible for scheduling tasks of Bridge-X."
+  },
+  "servers": [
+    {
+      "url": "https://bridge-server.glory-cloud.dev/api/v1",
+      "description": "development cluster in tokyo region"
+    },
+    {
+      "url": "http://localhost:3000",
+      "description": "local machine for debug"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Schedule"
+    }
+  ],
+  "paths": {
+    "/task-scheduler/schedules": {
+      "post": {
+        "tags": ["Schedule"],
+        "summary": "Creates the schedule",
+        "description": "This API schedules a task with the specified params and invokes the task later.",
+        "callbacks": {
+          "onSchedule": {
+            "$ref": "#/components/callbacks/onSchedule"
+          }
+        },
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Schedule"
+        },
+        "responses": {
+          "201": {
+            "description": "Scheduled"
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequestBody"
+          },
+          "500": {
+            "$ref": "#/components/responses/UnexpectedError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "requestBodies": {
+      "Schedule": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/PostSchedule"
+            }
+          }
+        }
+      },
+      "ScheduleNotification": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ScheduleNotification"
+            }
+          }
+        }
+      }
+    },
+    "callbacks": {
+      "onSchedule": {
+        "{$request.body#/callbackUrl}": {
+          "post": {
+            "requestBody": {
+              "$ref": "#/components/requestBodies/ScheduleNotification"
+            },
+            "responses": {
+              "204": {
+                "description": "This service ignores any responses, just reply ok."
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "InvalidRequestBody": {
+        "description": "The request body is invalid format",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "number",
+                  "example": 400
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Invalid Request Body"
+                }
+              }
+            }
+          }
+        }
+      },
+      "UnexpectedError": {
+        "description": "Unexpected error occured during processing",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "number",
+                  "example": 500
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Unexpected Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "PostSchedule": {
+        "type": "object",
+        "properties": {
+          "taskId": {
+            "type": "string",
+            "description": "the task identifier"
+          },
+          "callbackUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "the callback url to invoke a scheduled task.",
+            "example": "http://localhost:3000/with/no-auth/callbackUrl"
+          }
+        },
+        "required": ["taskId", "callbackUrl"]
+      },
+      "ScheduleNotification": {
+        "type": "object",
+        "properties": {
+          "taskId": {
+            "type": "string",
+            "description": "the task identifier",
+            "example": "specified-task-id"
+          }
+        },
+        "required": ["taskId"]
+      }
+    }
+  }
+}

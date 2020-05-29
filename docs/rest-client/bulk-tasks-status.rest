@@ -1,0 +1,49 @@
+//----------------------------------------------------------------
+// tasks status
+//----------------------------------------------------------------
+POST http://localhost:3100/bulk/tasks/status
+Content-Type: application/json
+
+[
+  {
+    "taskId": "{0315fdd6-51be-5cc6-2c12-5a653cb00001}"
+  },
+  {
+    "taskId": "{0416fdd6-51be-5cc6-2c12-5a653ab00002}"
+  },
+  {
+    "taskId": "{0516fdd6-51be-5cc6-2c12-6a653ab00003}"
+  },
+  {
+    "taskId": "{0616fdd6-51be-5cc6-2c12-7a653ab00004}"
+  }
+]
+
+###
+
+POST http://localhost:3100/bulk/tasks/status
+Content-Type: application/json
+
+[
+  {
+    "taskId": "{0516fdd6-51be-5cc6-2c12-6a653ab00008}"
+  }
+]
+
+###
+
+POST http://localhost:3100/bulk/tasks/status
+Content-Type: application/json
+
+[]
+
+###
+
+POST http://localhost:3100/bulk/tasks/status
+Content-Type: application/json
+
+[
+  {}
+]
+
+###

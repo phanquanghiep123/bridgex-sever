@@ -1,0 +1,12 @@
+INSERT INTO task_log_retrievelogs VALUES (1,'100001','CI10','ftps://ftp.glory-cloud.dev/0416fdd6-51be-5cc6-2c12-5a653ab00001/model-asset-01.tar.gz');
+INSERT INTO task_log_retrievelogs VALUES (1,'200002','CI50','ftps://ftp.glory-cloud.dev/0416fdd6-51be-5cc6-2c12-5a653ab00002/model-asset-02.tar.gz');
+INSERT INTO task_log_retrievelogs VALUES (2,'100001','CI10','ftps://ftp.glory-cloud.dev/0416fdd6-51be-5cc6-2c12-5a653ab00003/model-asset-03.tar.gz');
+INSERT INTO task_log_retrievelogs VALUES (2,'200002','CI50','ftps://ftp.glory-cloud.dev/0416fdd6-51be-5cc6-2c12-5a653ab00004/model-asset-04.tar.gz');
+INSERT INTO task_log_retrievelogs VALUES (4,'100001','CI10','ftps://ftp.glory-cloud.dev/0416fdd6-51be-5cc6-2c12-5a653ab00005/model-asset-05.tar.gz');
+INSERT INTO task_log_retrievelogs VALUES (4,'200002','CI50','ftps://ftp.glory-cloud.dev/0416fdd6-51be-5cc6-2c12-5a653ab00006/model-asset-06.tar.gz');
+INSERT INTO task_log_retrievelogs VALUES (5,'300003','CI100','ftps://ftp.glory-cloud.dev/0416fdd6-51be-5cc6-2c12-5a653ab00007/model-asset-07.tar.gz');
+INSERT INTO task_log_retrievelogs VALUES (6,'300003','CI100','ftps://ftp.glory-cloud.dev/0416fdd6-51be-5cc6-2c12-5a653ab00008/model-asset-08.tar.gz');
+INSERT INTO task_log_retrievelogs VALUES (8,'300003','CI100','ftps://ftp.glory-cloud.dev/0416fdd6-51be-5cc6-2c12-5a653ab00009/model-asset-09.tar.gz');
+INSERT INTO task_log_retrievelogs VALUES (9,'100001','CI10','ftps://ftp.glory-cloud.dev/0416fdd6-51be-5cc6-2c12-5a653ab00010/model-asset-10.tar.gz');
+INSERT INTO task_log_retrievelogs VALUES (9,'200002','CI50','ftps://ftp.glory-cloud.dev/0416fdd6-51be-5cc6-2c12-5a653ab00011/model-asset-11.tar.gz');
+INSERT INTO task_log_retrievelogs VALUES (10,'300003','CI100','ftps://ftp.glory-cloud.dev/0416fdd6-51be-5cc6-2c12-5a653ab00012/model-asset-12.tar.gz');
