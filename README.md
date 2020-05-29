@@ -113,3 +113,4 @@ $ npm run test
 ## Deploy to real environment
 
 We have been adopting GitOps. When pushing changes to master or develop branch, a pipeline starts. If the pipeline finished successfully, docker image created by the pipeline is registered with container registory. We deploy this app by using this docker image in k8s cluster.
+# bridgex-sever
